@@ -30,7 +30,7 @@ public class FMController {
             // try statement here eventually
             switch(view.getMenuSelection()){
                 case 1:
-                    view.io.print("DISPLAY ORDERS FEATURE NOT YET IMPLEMENTED");
+                    view.displayAllOrders(serv.getAllOrders());
                     break;
                 case 2:
                     view.io.print("ADD AN ORDER FEATURE NOT YET IMPLEMENTED");

@@ -5,6 +5,9 @@
  */
 package com.sg.flooringmastery.ui;
 
+import com.sg.flooringmastery.dto.FMOrder;
+import java.util.List;
+
 /**
  *
  * @author Isaia
@@ -23,10 +26,18 @@ public class FMView {
         
         return io.readInt("Please select one of the options above: ", 1, 5);
     }
+    
+    public void displayAllOrders(List<FMOrder> allOrders){
+        io.print("Order #, Customer Name");
+        for(FMOrder o : allOrders){
+            io.print("#" + o.getOrderNum() + " " + o.getCustomerName());
+        }
+    }
 
     public void displayExitMessage() {
         io.print("THANK YOU FOR CHOOSING FLOOR MASTERS LTD. \n"
                 + "FOR ALL YOUR FLOORING NEEDS, FLOOR MASTERS IS THERE!");
     }
         
+    
 }

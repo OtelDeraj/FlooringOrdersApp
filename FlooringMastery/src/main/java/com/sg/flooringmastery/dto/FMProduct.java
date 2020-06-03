@@ -16,6 +16,12 @@ public class FMProduct {
     private BigDecimal costPerSqFt;
     private BigDecimal laborCostPerSqFt;
 
+    public FMProduct(String material, BigDecimal cost, BigDecimal laborCost){
+        this.material = material;
+        this.costPerSqFt = cost;
+        this.laborCostPerSqFt = laborCost;
+    }
+    
     /**
      * @return the material
      */
