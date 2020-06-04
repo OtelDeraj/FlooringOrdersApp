@@ -20,7 +20,11 @@ import java.util.Scanner;
  */
 public class ProductDaoImpl implements PDao {
 
-    String PATH = "Products.txt";
+    String PATH;
+    
+    public ProductDaoImpl(String path){
+        this.PATH = path;
+    }
 
     public FMProduct convertLineToProduct(String row) {
         String[] cells = row.split("::");
@@ -57,12 +61,16 @@ public class ProductDaoImpl implements PDao {
 
     @Override
     public FMProduct getProductByName(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        FMProduct toReturn = null;
+        List<FMProduct> allProducts = getAllProducts();
+        for(FMProduct p : allProducts){
+            if(p.getMaterial().equalsIgnoreCase(name)){
+                toReturn = p;
+                break;
+            }
+        }
+        return toReturn;
     }
 
-    @Override
-    public void editProduct(FMProduct selectedProduct) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 
 }

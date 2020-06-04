@@ -6,6 +6,7 @@
 package com.sg.flooringmastery.dao;
 
 import com.sg.flooringmastery.dto.FMOrder;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -16,9 +17,13 @@ public interface ODao {
     
     List<FMOrder> getAllOrders();
     
-    FMOrder getOrderByNumber(int orderNum);
+    List<FMOrder> getOrdersForDate(LocalDate date);
+    
+    FMOrder getOrder(LocalDate date, int orderNum);
     
     FMOrder getOrderByName(String name);
+    
+    FMOrder addOrder(FMOrder toAdd);
     
     void editOrder(FMOrder selectedOrder);
     

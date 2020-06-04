@@ -13,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -66,6 +67,7 @@ public class OrderDaoImpl implements ODao {
         
         String[] cells = row.split("::");
         
+        
         int orderNum = Integer.parseInt(cells[0]);
         String customerName = cells[1];
         String state = cells[2];
@@ -106,18 +108,6 @@ public class OrderDaoImpl implements ODao {
         return allOrders;
     }
     
-    @Override
-    public FMOrder getOrderByNumber(int orderNum) {
-        FMOrder toReturn = null;
-        List<FMOrder> allOrders = getAllOrders();
-        for (FMOrder o : allOrders) {
-            if (o.getOrderNum() == orderNum) {
-                toReturn = o;
-                break;
-            }
-        }
-        return toReturn;
-    }
     
     @Override
     public FMOrder getOrderByName(String name) {
@@ -148,6 +138,36 @@ public class OrderDaoImpl implements ODao {
         allOrders.set(index, selectedOrder);
         
         writeFile(allOrders);
+    }
+
+    @Override
+    public List<FMOrder> getOrdersForDate(LocalDate date) {
+        return null; // will not be null after this method is implemented
+        
+    }
+    
+    @Override
+    public FMOrder getOrder( LocalDate date, int orderNum){
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public FMOrder addOrder(FMOrder toAdd) {
+        List<FMOrder> allOrders = getAllOrders();
+        
+        int maxOrderNum = 0;
+        
+        for(FMOrder o : allOrders){
+            if(o.getOrderNum() > maxOrderNum){
+                maxOrderNum = o.getOrderNum();
+            }
+        }
+        toAdd.setOrderNum(maxOrderNum + 1);
+        
+        allOrders.add(toAdd);
+        writeFile(allOrders);
+        
+        return toAdd;
     }
     
 }

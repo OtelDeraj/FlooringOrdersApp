@@ -11,11 +11,17 @@ import java.math.BigDecimal;
  *
  * @author Isaia
  */
-public class TaxByState {
+public class FMTax {
     private String stateAbv;
     private String stateName;
     private BigDecimal stateTaxRate;
 
+    public FMTax(String abv, String name, BigDecimal tax){
+        this.stateAbv = abv;
+        this.stateName = name;
+        this.stateTaxRate = tax;
+    }    
+    
     /**
      * @return the stateAbv
      */

@@ -12,6 +12,9 @@ import com.sg.flooringmastery.dao.ProductDaoImpl;
 import com.sg.flooringmastery.dao.TDao;
 import com.sg.flooringmastery.dao.TaxDaoImpl;
 import com.sg.flooringmastery.dto.FMOrder;
+import com.sg.flooringmastery.dto.FMProduct;
+import com.sg.flooringmastery.dto.FMTax;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -19,9 +22,9 @@ import java.util.List;
  * @author Isaia
  */
 public class FMService {
-    ODao od = new OrderDaoImpl("Orders_06022013.txt"); // TODO: remove the hard coding here, just using it for some end of day tests
-    PDao pd = new ProductDaoImpl();
-    TDao td = new TaxDaoImpl();
+    ODao od = new OrderDaoImpl("Orders_" + LocalDate.now() + ".txt"); // TODO: remove the hard coding here, just using it for some end of day tests
+    PDao pd = new ProductDaoImpl("Products.txt");
+    TDao td = new TaxDaoImpl("Taxes.txt");
     
     public FMService(){
         
@@ -31,6 +34,35 @@ public class FMService {
         return od.getAllOrders();
     }
     
+    public List<FMOrder> getOrdersForDate(LocalDate date){
+        return od.getOrdersForDate(date);
+    }
     
     
+    
+    //Add
+    
+    public FMOrder addOrder(FMOrder toAdd){
+        throw new UnsupportedOperationException();
+    }
+    
+    //Remove
+    
+//    public void removeOrder(FMOrder toRemove)
+    public void removeOrder(LocalDate date, int orderNum){  
+        throw new UnsupportedOperationException();
+    }
+    
+    //Edit
+    public void editOrder(FMOrder toEdit){
+        throw new UnsupportedOperationException();
+    }
+    
+    public List<FMTax> getAllStates(){
+        throw new UnsupportedOperationException();
+    }
+    
+    public List<FMProduct> getAllProducts(){
+        throw new UnsupportedOperationException();
+    }
 }

@@ -29,16 +29,16 @@ public class FMController {
             // double check to see if any information should be displayed above menu
             // try statement here eventually
             switch(view.getMenuSelection()){
-                case 1:
-                    view.displayAllOrders(serv.getAllOrders());
+                case 1: // this path should display all orders after prompting for a date from user
+                    view.displayOrdersByDate(serv.getOrdersForDate(view.getOrderDate()));
                     break;
-                case 2:
+                case 2: // prompt the user for relevant info to add an order to the program
                     view.io.print("ADD AN ORDER FEATURE NOT YET IMPLEMENTED");
                     break;
-                case 3:
+                case 3: // edit an existing order, search by date and then order num
                     view.io.print("EDIT AN ORDER FEATURE NOT YET IMPLEMENTED");
                     break;
-                case 4:
+                case 4: // remove existing order, search by date and then order num
                     view.io.print("REMOVE AN ORDER FEATURE NOT YET IMPLEMENTED");
                     break;
                 case 5:

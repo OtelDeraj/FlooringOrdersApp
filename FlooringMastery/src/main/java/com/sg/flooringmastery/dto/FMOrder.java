@@ -6,15 +6,24 @@
 package com.sg.flooringmastery.dto;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 /**
  *
  * @author Isaia
  */
 public class FMOrder {
+    
+    
+    //problems FMOrder properties
+    //date in past      (addOrder service layer) 1
+    //null              (add & edit service & dao layer) 4
+    private LocalDate date; // TODO: be sure to figure out how dates fit into all of this.
+    //bad orderNum      (editOrder service/dao) 2
     private int orderNum;
+    //customerName null ()
     private String customerName;
-    private TaxByState taxRate;
+    private FMTax taxRate;
     private FMProduct product;
     private BigDecimal area;
     private BigDecimal materialCost = (getProduct().getCostPerSqFt()
@@ -25,7 +34,12 @@ public class FMOrder {
             .multiply(getTaxRate().getStateTaxRate().divide(new BigDecimal("100")));
     private BigDecimal totalCost = materialCost.add(laborCost.add(salesTax));
 
-    public FMOrder(int orderNum, String customerName, String state, BigDecimal taxRate,
+    
+    public FMOrder(){
+        
+    }
+    
+    public FMOrder( int orderNum, String customerName, String state, BigDecimal taxRate,
             String productType, BigDecimal area, BigDecimal costPerSqFt, BigDecimal laborCostPerSqFt,
             BigDecimal materialCost, BigDecimal laborCost, BigDecimal tax, BigDecimal total) {
         this.orderNum = orderNum;
@@ -42,8 +56,19 @@ public class FMOrder {
         this.totalCost = total;
     }
 
-    
-    
+    /**
+     * @return the date
+     */
+    public LocalDate getDate() {
+        return date;
+    }
+
+    /**
+     * @param date the date to set
+     */
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
     
     /**
      * @return the orderNum
@@ -76,14 +101,14 @@ public class FMOrder {
     /**
      * @return the taxRate
      */
-    public TaxByState getTaxRate() {
+    public FMTax getTaxRate() {
         return taxRate;
     }
 
     /**
      * @param taxRate the taxRate to set
      */
-    public void setTaxRate(TaxByState taxRate) {
+    public void setTaxRate(FMTax taxRate) {
         this.taxRate = taxRate;
     }
 
@@ -142,4 +167,6 @@ public class FMOrder {
     public BigDecimal getTotalCost() {
         return totalCost;
     }
+
+    
 }

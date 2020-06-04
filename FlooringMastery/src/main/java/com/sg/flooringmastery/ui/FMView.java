@@ -6,6 +6,7 @@
 package com.sg.flooringmastery.ui;
 
 import com.sg.flooringmastery.dto.FMOrder;
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -27,7 +28,19 @@ public class FMView {
         return io.readInt("Please select one of the options above: ", 1, 5);
     }
     
-    public void displayAllOrders(List<FMOrder> allOrders){
+    public FMOrder createNewOrder(){
+        FMOrder toReturn = new FMOrder();
+        toReturn.setDate(io.readDate("Please enter the desired date of service: "));
+        toReturn.setCustomerName(io.readString("Please enter a name for the order: "));
+//        toReturn.
+        return null;
+    }
+    
+    public LocalDate getOrderDate(){
+        return io.readDate("Please enter the date of the order.");
+    }
+    
+    public void displayOrdersByDate(List<FMOrder> allOrders){
         io.print("Order #, Customer Name");
         for(FMOrder o : allOrders){
             io.print("#" + o.getOrderNum() + " " + o.getCustomerName());

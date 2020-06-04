@@ -17,6 +17,6 @@ public interface PDao {
     List<FMProduct> getAllProducts();
     
     FMProduct getProductByName(String name);
-    // TODO: be sure to remove this method from the interface if it doesn't end up getting utilized
-    public void editProduct(FMProduct selectedProduct); 
+    
+    
 }
