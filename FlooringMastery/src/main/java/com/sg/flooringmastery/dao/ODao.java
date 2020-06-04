@@ -14,15 +14,11 @@ import java.util.List;
  * @author Isaia
  */
 public interface ODao {
-    
-    List<FMOrder> getAllOrders();
-    
+        
     List<FMOrder> getOrdersForDate(LocalDate date);
     
     FMOrder getOrder(LocalDate date, int orderNum);
-    
-    FMOrder getOrderByName(String name);
-    
+        
     FMOrder addOrder(FMOrder toAdd);
     
     void editOrder(FMOrder selectedOrder);

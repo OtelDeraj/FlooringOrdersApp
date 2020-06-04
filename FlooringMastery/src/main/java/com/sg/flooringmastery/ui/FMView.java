@@ -32,7 +32,8 @@ public class FMView {
         FMOrder toReturn = new FMOrder();
         toReturn.setDate(io.readDate("Please enter the desired date of service: "));
         toReturn.setCustomerName(io.readString("Please enter a name for the order: "));
-//        toReturn.
+        toReturn.setState(io.readString("Please enter your state abbreviation: "));
+        
         return null;
     }
     

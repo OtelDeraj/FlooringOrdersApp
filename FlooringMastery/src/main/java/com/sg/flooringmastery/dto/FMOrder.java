@@ -13,8 +13,7 @@ import java.time.LocalDate;
  * @author Isaia
  */
 public class FMOrder {
-    
-    
+
     //problems FMOrder properties
     //date in past      (addOrder service layer) 1
     //null              (add & edit service & dao layer) 4
@@ -23,37 +22,47 @@ public class FMOrder {
     private int orderNum;
     //customerName null ()
     private String customerName;
+    private String state;
     private FMTax taxRate;
     private FMProduct product;
     private BigDecimal area;
-    private BigDecimal materialCost = (getProduct().getCostPerSqFt()
-            .multiply(area));
-    private BigDecimal laborCost = (getProduct().getLaborCostPerSqFt()
-            .multiply(area));
-    private BigDecimal salesTax = (materialCost.add(laborCost))
-            .multiply(getTaxRate().getStateTaxRate().divide(new BigDecimal("100")));
-    private BigDecimal totalCost = materialCost.add(laborCost.add(salesTax));
+    private BigDecimal materialCost;
+    private BigDecimal laborCost;
+    private BigDecimal salesTax;
+    private BigDecimal totalCost;
 
-    
-    public FMOrder(){
-        
+    public FMOrder() {
+
     }
-    
-    public FMOrder( int orderNum, String customerName, String state, BigDecimal taxRate,
+// this constructor is for reading from files
+    public FMOrder(int orderNum, String customerName, String stateAbv, BigDecimal taxRate,
             String productType, BigDecimal area, BigDecimal costPerSqFt, BigDecimal laborCostPerSqFt,
             BigDecimal materialCost, BigDecimal laborCost, BigDecimal tax, BigDecimal total) {
         this.orderNum = orderNum;
         this.customerName = customerName;
-        this.taxRate.setStateName(state);
-        this.taxRate.setStateTaxRate(taxRate);
-        this.product.setMaterial(productType);
+        this.taxRate = new FMTax(stateAbv, taxRate);
+        this.product = new FMProduct(productType, costPerSqFt, laborCostPerSqFt);
         this.area = area;
-        this.product.setCostPerSqFt(costPerSqFt);
-        this.product.setLaborCostPerSqFt(laborCostPerSqFt);
         this.materialCost = materialCost;
         this.laborCost = laborCost;
         this.salesTax = tax;
         this.totalCost = total;
+    }
+// this constructor is for generating new orders
+    public FMOrder(int orderNum, String customerName, String stateAbv, BigDecimal taxRate,
+            String productType, BigDecimal area, BigDecimal costPerSqFt, BigDecimal laborCostPerSqFt) {
+        this.orderNum = orderNum;
+        this.customerName = customerName;
+        this.taxRate = new FMTax(stateAbv, taxRate);
+        this.product = new FMProduct(productType, costPerSqFt, laborCostPerSqFt);
+        this.area = area;
+        this.materialCost = (this.product.getCostPerSqFt()
+            .multiply(this.area));
+        this.laborCost = (this.product.getLaborCostPerSqFt()
+            .multiply(this.area));
+        this.salesTax = (this.materialCost.add(this.laborCost))
+            .multiply(this.taxRate.getStateTaxRate().divide(new BigDecimal("100")));
+        this.totalCost = this.materialCost.add(this.laborCost.add(this.salesTax));
     }
 
     /**
@@ -69,7 +78,7 @@ public class FMOrder {
     public void setDate(LocalDate date) {
         this.date = date;
     }
-    
+
     /**
      * @return the orderNum
      */
@@ -168,5 +177,18 @@ public class FMOrder {
         return totalCost;
     }
 
-    
+    /**
+     * @return the state
+     */
+    public String getState() {
+        return state;
+    }
+
+    /**
+     * @param state the state to set
+     */
+    public void setState(String state) {
+        this.state = state;
+    }
+
 }

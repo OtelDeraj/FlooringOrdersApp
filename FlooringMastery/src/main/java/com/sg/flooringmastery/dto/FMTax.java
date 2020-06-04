@@ -21,6 +21,11 @@ public class FMTax {
         this.stateName = name;
         this.stateTaxRate = tax;
     }    
+
+    public FMTax(String stateAbv, BigDecimal taxRate) {
+        this.stateAbv = stateAbv;
+        this.stateTaxRate = taxRate;
+    }
     
     /**
      * @return the stateAbv

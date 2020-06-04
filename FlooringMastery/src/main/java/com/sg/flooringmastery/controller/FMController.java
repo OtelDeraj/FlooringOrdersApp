@@ -21,7 +21,7 @@ public class FMController {
         this.view = view;
         this.serv = serv;
     }
-    
+    //TODO change dao delimiters from :: to ,
     
     public void run(){
         boolean keepGoing = true;

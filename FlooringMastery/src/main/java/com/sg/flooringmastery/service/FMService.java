@@ -30,9 +30,7 @@ public class FMService {
         
     }
     
-    public List<FMOrder> getAllOrders(){
-        return od.getAllOrders();
-    }
+    
     
     public List<FMOrder> getOrdersForDate(LocalDate date){
         return od.getOrdersForDate(date);

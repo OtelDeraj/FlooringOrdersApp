@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -25,6 +26,8 @@ import java.util.Scanner;
 public class OrderDaoImpl implements ODao {
     
     String PATH;
+    
+    final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MMddyyyy");
     
     public OrderDaoImpl(String path) {
         this.PATH = path;
@@ -50,23 +53,22 @@ public class OrderDaoImpl implements ODao {
     }
     
     private String convertOrderToLine(FMOrder o) {
-        return o.getOrderNum() + "::"
-                + o.getCustomerName() + "::"
-                + o.getTaxRate().getStateName() + "::"
-                + o.getTaxRate().getStateTaxRate() + "::"
-                + o.getProduct().getMaterial() + "::"
-                + o.getArea() + "::"
-                + o.getProduct().getCostPerSqFt() + "::"
-                + o.getProduct().getLaborCostPerSqFt() + "::"
-                + o.getMaterialCost() + "::"
-                + o.getSalesTax() + "::"
+        return o.getOrderNum() + ","
+                + o.getCustomerName() + ","
+                + o.getTaxRate().getStateName() + ","
+                + o.getTaxRate().getStateTaxRate() + ","
+                + o.getProduct().getMaterial() + ","
+                + o.getArea() + ","
+                + o.getProduct().getCostPerSqFt() + ","
+                + o.getProduct().getLaborCostPerSqFt() + ","
+                + o.getMaterialCost() + ","
+                + o.getSalesTax() + ","
                 + o.getTotalCost();
     }
     
     private FMOrder convertLineToOrder(String row) {
         
-        String[] cells = row.split("::");
-        
+        String[] cells = row.split(",");
         
         int orderNum = Integer.parseInt(cells[0]);
         String customerName = cells[1];
@@ -88,11 +90,10 @@ public class OrderDaoImpl implements ODao {
     }
     
     @Override
-    public List<FMOrder> getAllOrders() {
+    public List<FMOrder> getOrdersForDate(LocalDate date) {
         List<FMOrder> allOrders = new ArrayList<>();
-        
         try {
-            Scanner scnFile = new Scanner(new BufferedReader(new FileReader(PATH)));
+            Scanner scnFile = new Scanner(new BufferedReader(new FileReader("Orders_" + date.format(FORMATTER) + ".txt")));
             scnFile.nextLine();
             while (scnFile.hasNextLine()) {
                 String row = scnFile.nextLine();
@@ -108,23 +109,11 @@ public class OrderDaoImpl implements ODao {
         return allOrders;
     }
     
-    
-    @Override
-    public FMOrder getOrderByName(String name) {
-        FMOrder toReturn = null;
-        List<FMOrder> allOrders = getAllOrders();
-        for (FMOrder o : allOrders) {
-            if (o.getCustomerName().equalsIgnoreCase(name)) {
-                toReturn = o;
-                break;
-            }
-        }
-        return toReturn;
-    }
+   
     
     @Override
     public void editOrder(FMOrder selectedOrder) {
-        List<FMOrder> allOrders = getAllOrders();
+        List<FMOrder> allOrders = getOrdersForDate(selectedOrder.getDate());
         int index = -1;
         for (int i = 0; i < allOrders.size(); i++) {
             FMOrder toCheck = allOrders.get(i);
@@ -140,11 +129,6 @@ public class OrderDaoImpl implements ODao {
         writeFile(allOrders);
     }
 
-    @Override
-    public List<FMOrder> getOrdersForDate(LocalDate date) {
-        return null; // will not be null after this method is implemented
-        
-    }
     
     @Override
     public FMOrder getOrder( LocalDate date, int orderNum){
@@ -153,7 +137,7 @@ public class OrderDaoImpl implements ODao {
 
     @Override
     public FMOrder addOrder(FMOrder toAdd) {
-        List<FMOrder> allOrders = getAllOrders();
+        List<FMOrder> allOrders = getOrdersForDate(toAdd.getDate());
         
         int maxOrderNum = 0;
         
