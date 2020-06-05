@@ -6,6 +6,7 @@
 package com.sg.flooringmastery.dto;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 
 /**
@@ -49,9 +50,9 @@ public class FMOrder {
         this.totalCost = total;
     }
 // this constructor is for generating new orders
-    public FMOrder(int orderNum, String customerName, String stateAbv, BigDecimal taxRate,
+    public FMOrder(LocalDate date, String customerName, String stateAbv, BigDecimal taxRate,
             String productType, BigDecimal area, BigDecimal costPerSqFt, BigDecimal laborCostPerSqFt) {
-        this.orderNum = orderNum;
+        this.date = date;
         this.customerName = customerName;
         this.taxRate = new FMTax(stateAbv, taxRate);
         this.product = new FMProduct(productType, costPerSqFt, laborCostPerSqFt);
@@ -59,10 +60,10 @@ public class FMOrder {
         this.materialCost = (this.product.getCostPerSqFt()
             .multiply(this.area));
         this.laborCost = (this.product.getLaborCostPerSqFt()
-            .multiply(this.area));
+            .multiply(this.area).setScale(2, RoundingMode.HALF_UP));
         this.salesTax = (this.materialCost.add(this.laborCost))
-            .multiply(this.taxRate.getStateTaxRate().divide(new BigDecimal("100")));
-        this.totalCost = this.materialCost.add(this.laborCost.add(this.salesTax));
+            .multiply(this.taxRate.getStateTaxRate().divide(new BigDecimal("100"))).setScale(2, RoundingMode.HALF_UP);
+        this.totalCost = this.materialCost.add(this.laborCost.add(this.salesTax)).setScale(2, RoundingMode.HALF_UP);
     }
 
     /**

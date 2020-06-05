@@ -258,6 +258,15 @@ public class UserIOConsoleImpl implements UserIO {// implementation of UserIO in
         }
         return result.setScale(2, RoundingMode.HALF_UP);
     }
+    
+    @Override
+    public BigDecimal readBigDecimal(String prompt, BigDecimal min, BigDecimal max){
+        BigDecimal result;
+        do{
+            result = readBigDecimal(prompt);
+        } while (result.compareTo(min) == -1 || result.compareTo(max) == 1);
+        return result;
+    }
 
     @Override
     public LocalDate readDate(String prompt) {

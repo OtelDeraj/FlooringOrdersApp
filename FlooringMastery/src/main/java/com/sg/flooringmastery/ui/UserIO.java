@@ -38,6 +38,8 @@ public interface UserIO { // basic IO interface
     
     BigDecimal readBigDecimal(String prompt);
     
+    BigDecimal readBigDecimal(String prompt, BigDecimal min, BigDecimal max);
+    
     LocalDate readDate(String prompt);
     
     LocalDate editDate(String prompt, LocalDate original);

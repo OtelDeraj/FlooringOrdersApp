@@ -49,12 +49,12 @@ public class TaxDaoImpl implements TDao {
     }
 
     @Override
-    public FMTax getTaxByStateAbv(String abv) {
-        FMTax toReturn = null;
+    public BigDecimal getTaxByStateAbv(String abv) {
+        BigDecimal toReturn = null;
         List<FMTax> allStates = getAllStates();
         for(FMTax t : allStates) {
             if(t.getStateAbv().equalsIgnoreCase(abv)) {
-                toReturn = t;
+                toReturn = t.getStateTaxRate();
                 break;
             }
         }
@@ -62,7 +62,7 @@ public class TaxDaoImpl implements TDao {
     }
 
     private FMTax convertLineToTax(String row) {
-        String[] cells = row.split("::");
+        String[] cells = row.split(",");
         
         String abv = cells[0];
         String stateName = cells[1];

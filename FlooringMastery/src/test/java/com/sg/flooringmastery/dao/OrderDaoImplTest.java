@@ -38,31 +38,17 @@ public class OrderDaoImplTest {
     }
 
     /**
-     * Test of getAllOrders method, of class OrderDaoImpl.
+     * Test of getOrdersForDate method, of class OrderDaoImpl.
      */
     @Test
-    public void testGetAllOrders() {
-    }
-
-    /**
-     * Test of getOrderByName method, of class OrderDaoImpl.
-     */
-    @Test
-    public void testGetOrderByName() {
+    public void testGetOrdersForDate() {
     }
 
     /**
      * Test of editOrder method, of class OrderDaoImpl.
      */
     @Test
-    public void testEditOrder() {
-    }
-
-    /**
-     * Test of getOrdersForDate method, of class OrderDaoImpl.
-     */
-    @Test
-    public void testGetOrdersForDate() {
+    public void testEditOrder() throws Exception {
     }
 
     /**
@@ -76,7 +62,7 @@ public class OrderDaoImplTest {
      * Test of addOrder method, of class OrderDaoImpl.
      */
     @Test
-    public void testAddOrder() {
+    public void testAddOrder() throws Exception {
     }
     
 }

@@ -27,7 +27,7 @@ public class ProductDaoImpl implements PDao {
     }
 
     public FMProduct convertLineToProduct(String row) {
-        String[] cells = row.split("::");
+        String[] cells = row.split(",");
 
         String material = cells[0];
         BigDecimal costPerSqFt = new BigDecimal(cells[1]);

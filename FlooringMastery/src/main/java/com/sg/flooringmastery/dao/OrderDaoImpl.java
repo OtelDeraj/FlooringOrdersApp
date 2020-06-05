@@ -6,13 +6,17 @@
 package com.sg.flooringmastery.dao;
 
 import com.sg.flooringmastery.dto.FMOrder;
+import com.sg.flooringmastery.exceptions.OrderDaoException;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import static java.lang.Integer.parseInt;
 import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -25,17 +29,18 @@ import java.util.Scanner;
  */
 public class OrderDaoImpl implements ODao {
     
-    String PATH;
+    String DIRECTORY;
     
     final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MMddyyyy");
     
-    public OrderDaoImpl(String path) {
-        this.PATH = path;
+    public OrderDaoImpl(String directory) {
+        this.DIRECTORY = directory;
     }
     
-    private void writeFile(List<FMOrder> toWrite) {
+    public void writeFile(List<FMOrder> toWrite, LocalDate date) throws OrderDaoException {
+        String path = convertDateToPath(date);
         try {
-            PrintWriter write = new PrintWriter(new FileWriter(PATH));
+            PrintWriter write = new PrintWriter(new FileWriter(path));
             
             write.println("OrderNumber,CustomerName,State,TaxRate,ProductType,"
                     + "Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,"
@@ -48,20 +53,21 @@ public class OrderDaoImpl implements ODao {
             write.flush();
             write.close();
         } catch (IOException ex) {
-            
+            throw new OrderDaoException("Could not write to " + path + " file: ", ex);
         }
     }
     
     private String convertOrderToLine(FMOrder o) {
         return o.getOrderNum() + ","
                 + o.getCustomerName() + ","
-                + o.getTaxRate().getStateName() + ","
+                + o.getTaxRate().getStateAbv() + ","
                 + o.getTaxRate().getStateTaxRate() + ","
                 + o.getProduct().getMaterial() + ","
                 + o.getArea() + ","
                 + o.getProduct().getCostPerSqFt() + ","
                 + o.getProduct().getLaborCostPerSqFt() + ","
                 + o.getMaterialCost() + ","
+                + o.getLaborCost() + ","
                 + o.getSalesTax() + ","
                 + o.getTotalCost();
     }
@@ -91,9 +97,10 @@ public class OrderDaoImpl implements ODao {
     
     @Override
     public List<FMOrder> getOrdersForDate(LocalDate date) {
+        String path = convertDateToPath(date);
         List<FMOrder> allOrders = new ArrayList<>();
-        try {
-            Scanner scnFile = new Scanner(new BufferedReader(new FileReader("Orders_" + date.format(FORMATTER) + ".txt")));
+        try { 
+            Scanner scnFile = new Scanner(new BufferedReader(new FileReader(path)));
             scnFile.nextLine();
             while (scnFile.hasNextLine()) {
                 String row = scnFile.nextLine();
@@ -112,7 +119,7 @@ public class OrderDaoImpl implements ODao {
    
     
     @Override
-    public void editOrder(FMOrder selectedOrder) {
+    public void editOrder(FMOrder selectedOrder) throws OrderDaoException {
         List<FMOrder> allOrders = getOrdersForDate(selectedOrder.getDate());
         int index = -1;
         for (int i = 0; i < allOrders.size(); i++) {
@@ -126,7 +133,7 @@ public class OrderDaoImpl implements ODao {
         }
         allOrders.set(index, selectedOrder);
         
-        writeFile(allOrders);
+        writeFile(allOrders, selectedOrder.getDate());
     }
 
     
@@ -136,7 +143,7 @@ public class OrderDaoImpl implements ODao {
     }
 
     @Override
-    public FMOrder addOrder(FMOrder toAdd) {
+    public FMOrder addOrder(FMOrder toAdd) throws OrderDaoException {
         List<FMOrder> allOrders = getOrdersForDate(toAdd.getDate());
         
         int maxOrderNum = 0;
@@ -149,9 +156,16 @@ public class OrderDaoImpl implements ODao {
         toAdd.setOrderNum(maxOrderNum + 1);
         
         allOrders.add(toAdd);
-        writeFile(allOrders);
+        writeFile(allOrders, toAdd.getDate());
         
         return toAdd;
+    }
+
+    private String convertDateToPath(LocalDate date) {
+        
+        String fileName = "Orders_" + date.format(FORMATTER) + ".txt";
+        Path filePath = Paths.get(DIRECTORY, fileName);
+        return filePath.toString();
     }
     
 }
