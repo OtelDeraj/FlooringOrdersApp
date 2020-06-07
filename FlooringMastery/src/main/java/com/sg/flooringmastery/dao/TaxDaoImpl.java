@@ -47,14 +47,14 @@ public class TaxDaoImpl implements TDao {
         }
         return allStates;
     }
-
+    
     @Override
-    public BigDecimal getTaxByStateAbv(String abv) {
-        BigDecimal toReturn = null;
+    public FMTax getTaxByStateAbv(String abv) {
+        FMTax toReturn = null;
         List<FMTax> allStates = getAllStates();
         for(FMTax t : allStates) {
             if(t.getStateAbv().equalsIgnoreCase(abv)) {
-                toReturn = t.getStateTaxRate();
+                toReturn = t;
                 break;
             }
         }

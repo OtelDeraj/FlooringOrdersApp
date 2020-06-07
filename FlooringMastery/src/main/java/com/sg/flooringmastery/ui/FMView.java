@@ -10,7 +10,9 @@ import com.sg.flooringmastery.dto.FMProduct;
 import com.sg.flooringmastery.dto.FMTax;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -32,15 +34,24 @@ public class FMView {
         return io.readInt("Please select one of the options above: ", 1, 5);
     }
 
+    public int getDisplayPreference() {
+        io.print("1. Display Single");
+        io.print("2. Display Multiple ");
+
+        return io.readInt("Please select one of the options above: ", 1, 2);
+    }
+
     public FMOrder createNewOrder(List<FMProduct> productList, List<FMTax> stateList) {
         FMOrder toReturn = new FMOrder();
         FMProduct pDetails = new FMProduct();
         toReturn.setDate(io.readDate("Please enter the desired date of service: "));
         toReturn.setCustomerName(io.readString("Please enter a name for the order: "));
         displayAllStates(stateList);
-        toReturn.setState(io.readString("Please enter your state abbreviation: "));
+        toReturn.setStateAbv(getUsersStateTaxChoice(io.readString("Plese enter a state "
+                + "abbreviation from the list above: "), stateList));
         displayAllProducts(productList);
-        pDetails.setMaterial(io.readString("What material would you like "));
+        pDetails.setMaterial(getUsersMaterialChoice(io.readString("Please enter a material "
+                + "from the list above: "), productList));
         toReturn.setProduct(pDetails);
         toReturn.setArea(io.readBigDecimal("Please enter the square footage of the order."
                 + " Sq Footage must be 100ft or greater", new BigDecimal("100"), new BigDecimal(Integer.MAX_VALUE)));
@@ -52,23 +63,50 @@ public class FMView {
         return io.readDate("Please enter the date of the order: ");
     }
 
+    public int getOrderNum() {
+        return io.readInt("Please enter order number: ");
+    }
+
+    public FMOrder editOrderDetails(FMOrder toEdit, List<FMProduct> productList, List<FMTax> stateList) {
+
+        toEdit.setCustomerName(io.editString("Enter a new Customer Name or press Enter to keep "
+                + "[" + toEdit.getCustomerName() + "]: ", toEdit.getCustomerName()));
+        displayAllStates(stateList);
+        String abv = null;
+        while(abv == null){
+            abv = getUsersStateTaxChoice(io.editString("Enter a new State abbreviation or press Enter to keep "
+                + "[" + toEdit.getTaxRate().getStateAbv() + "]: ", toEdit.getTaxRate().getStateAbv()), stateList);
+        }
+        toEdit.setStateAbv(abv);
+        displayAllProducts(productList);
+        String material = null;
+        while(material == null){
+                material = getUsersMaterialChoice(io.editString("Enter a new product material or press Enter to keep "
+                + "[" + toEdit.getProduct().getMaterial() + "]: ", toEdit.getProduct().getMaterial()), productList);
+        }
+        toEdit.getProduct().setMaterial(material);
+        toEdit.setArea(io.editBigDecimal("Enter a new area in sq feet for the order or press Enter to keep "
+                + "[" + toEdit.getArea() + "]: ", toEdit.getArea()));
+
+        return toEdit;
+    }
+
     private void displayAllProducts(List<FMProduct> allProducts) {
         io.print("Material, Cost Per Sq Foot, Labor Cost Per Sq Foot: ");
         for (FMProduct p : allProducts) {
             io.print(p.getMaterial() + ", " + p.getCostPerSqFt() + ", " + p.getLaborCostPerSqFt());
         }
     }
-    
-    private void displayAllStates(List<FMTax> allStates){
+
+    private void displayAllStates(List<FMTax> allStates) {
         io.print("State Abv, State Name, State Tax Rate: ");
-        for(FMTax t : allStates){
+        for (FMTax t : allStates) {
             io.print(t.getStateAbv() + ", " + t.getStateName() + ", " + t.getStateTaxRate());
         }
     }
 
-    public FMOrder displayFinalOrderForConfirmation(FMOrder order) {
-        FMOrder toReturn = null;
-        io.print("Order Date: " + order.getDate());
+    public void displayOrder(FMOrder order) {
+        io.print("Order Date: " + order.getDate().format(DateTimeFormatter.ofPattern("MM/dd/yyyy")));
         io.print("Customer Name: " + order.getCustomerName());
         io.print("State: " + order.getTaxRate().getStateAbv());
         io.print("State Tax Rate: " + order.getTaxRate().getStateTaxRate());
@@ -78,24 +116,48 @@ public class FMView {
         io.print("Labor Cost: " + order.getLaborCost());
         io.print("Sales Tax: " + order.getSalesTax());
         io.print("Total: " + order.getTotalCost());
+    }
+
+    public FMOrder displayFinalOrderForConfirmation(FMOrder order) {
+        FMOrder toReturn = null;
+        displayOrder(order);
         String confirm = null;
         boolean validAnswer = false;
-        while(!validAnswer){
+        while (!validAnswer) {
             confirm = io.readString("Confirm order. Type Yes or No.");
-            if(confirm.equalsIgnoreCase("yes")){
+            if (confirm.equalsIgnoreCase("yes")) {
                 toReturn = order;
                 validAnswer = true;
-            } else if(confirm.equalsIgnoreCase("no")){
+            } else if (confirm.equalsIgnoreCase("no")) {
                 validAnswer = true;
             }
         }
         return toReturn;
     }
 
-    public void displayOrdersByDate(List<FMOrder> allOrders) {
-        io.print("Order #, Customer Name");
+    public FMOrder displayOrderForRemoval(FMOrder order) {
+        FMOrder toReturn = null;
+        displayOrder(order);
+        String confirm = null;
+        boolean validAnswer = false;
+        while (!validAnswer) {
+            confirm = io.readString("Remove Order. Type Yes or No.");
+            if (confirm.equalsIgnoreCase("yes")) {
+                toReturn = order;
+                validAnswer = true;
+            } else if (confirm.equalsIgnoreCase("no")) {
+                validAnswer = true;
+            }
+        }
+        return toReturn;
+    }
+
+    public void displayAllOrdersByDate(List<FMOrder> allOrders) {
+        io.print("Order #, Customer Name, State, Material, Area, Total");
         for (FMOrder o : allOrders) {
-            io.print("#" + o.getOrderNum() + " " + o.getCustomerName());
+            io.print("#" + o.getOrderNum() + ", " + o.getCustomerName() + ", "
+                    + o.getTaxRate().getStateAbv() + ", " + o.getProduct().getMaterial() + ", "
+                    + o.getArea() + ", " + o.getTotalCost());
         }
     }
 
@@ -106,6 +168,27 @@ public class FMView {
 
     public void displayErrorMessage(String message) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private String getUsersStateTaxChoice(String input, List<FMTax> stateList) {
+        String stateAbv = null;
+        List<FMTax> taxList = stateList.stream().filter(t -> t.getStateAbv().equalsIgnoreCase(input)).collect(Collectors.toList());
+        if (taxList.size() > 0) {
+            stateAbv = taxList.get(0).getStateAbv();
+        }
+        return stateAbv;
+    }
+
+    private String getUsersMaterialChoice(String input, List<FMProduct> productList) {
+        String material = null;
+
+        List<FMProduct> products = productList.stream().filter(p -> p.getMaterial().equalsIgnoreCase(input)).collect(Collectors.toList());
+        if (products.size() > 0) {
+            material = products.get(0).getMaterial();
+        }
+
+        return material;
+
     }
 
 }

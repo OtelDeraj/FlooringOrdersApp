@@ -23,7 +23,7 @@ public class FMOrder {
     private int orderNum;
     //customerName null ()
     private String customerName;
-    private String state;
+    private String stateAbv;
     private FMTax taxRate;
     private FMProduct product;
     private BigDecimal area;
@@ -36,6 +36,7 @@ public class FMOrder {
 
     }
 // this constructor is for reading from files
+
     public FMOrder(int orderNum, String customerName, String stateAbv, BigDecimal taxRate,
             String productType, BigDecimal area, BigDecimal costPerSqFt, BigDecimal laborCostPerSqFt,
             BigDecimal materialCost, BigDecimal laborCost, BigDecimal tax, BigDecimal total) {
@@ -49,20 +50,22 @@ public class FMOrder {
         this.salesTax = tax;
         this.totalCost = total;
     }
+
 // this constructor is for generating new orders
-    public FMOrder(LocalDate date, String customerName, String stateAbv, BigDecimal taxRate,
-            String productType, BigDecimal area, BigDecimal costPerSqFt, BigDecimal laborCostPerSqFt) {
-        this.date = date;
-        this.customerName = customerName;
-        this.taxRate = new FMTax(stateAbv, taxRate);
-        this.product = new FMProduct(productType, costPerSqFt, laborCostPerSqFt);
-        this.area = area;
+    public FMOrder(FMOrder rawOrder, FMProduct product, FMTax taxRate) {
+        this.orderNum = rawOrder.getOrderNum();
+        this.date = rawOrder.getDate();
+        this.customerName = rawOrder.getCustomerName();
+        this.taxRate = taxRate;
+        this.product = product;
+        this.area = rawOrder.getArea();
+        
         this.materialCost = (this.product.getCostPerSqFt()
-            .multiply(this.area));
+                .multiply(this.area));
         this.laborCost = (this.product.getLaborCostPerSqFt()
-            .multiply(this.area).setScale(2, RoundingMode.HALF_UP));
+                .multiply(this.area).setScale(2, RoundingMode.HALF_UP));
         this.salesTax = (this.materialCost.add(this.laborCost))
-            .multiply(this.taxRate.getStateTaxRate().divide(new BigDecimal("100"))).setScale(2, RoundingMode.HALF_UP);
+                .multiply(this.taxRate.getStateTaxRate().divide(new BigDecimal("100"))).setScale(2, RoundingMode.HALF_UP);
         this.totalCost = this.materialCost.add(this.laborCost.add(this.salesTax)).setScale(2, RoundingMode.HALF_UP);
     }
 
@@ -179,17 +182,17 @@ public class FMOrder {
     }
 
     /**
-     * @return the state
+     * @return the stateAbv
      */
-    public String getState() {
-        return state;
+    public String getStateAbv() {
+        return stateAbv;
     }
 
     /**
-     * @param state the state to set
+     * @param stateAbv the stateAbv to set
      */
-    public void setState(String state) {
-        this.state = state;
+    public void setStateAbv(String stateAbv) {
+        this.stateAbv = stateAbv;
     }
 
 }

@@ -243,6 +243,17 @@ public class UserIOConsoleImpl implements UserIO {// implementation of UserIO in
         }
         return toReturn;
     }
+    
+    @Override
+    public BigDecimal editBigDecimal(String prompt, BigDecimal originalNumber){
+        BigDecimal toReturn = readBigDecimal(prompt, new BigDecimal("100"),
+                new BigDecimal(Integer.MAX_VALUE));
+        
+        if(toReturn.toString().isEmpty()){
+            toReturn = originalNumber;
+        }
+        return toReturn;
+    }
 
     @Override
     public BigDecimal readBigDecimal(String prompt) {

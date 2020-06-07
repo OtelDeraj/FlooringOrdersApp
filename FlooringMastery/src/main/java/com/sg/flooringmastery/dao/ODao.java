@@ -24,4 +24,6 @@ public interface ODao {
     
     void editOrder(FMOrder selectedOrder) throws OrderDaoException;
     
+    void removeOrder(FMOrder toRemove) throws OrderDaoException;
+    
 }

@@ -16,10 +16,7 @@ import java.util.List;
  */
 public interface TDao {
     
-    
     List<FMTax> getAllStates() throws TaxDaoException;
     
-    BigDecimal getTaxByStateAbv(String abv) throws TaxDaoException;
-    
-    
+    FMTax getTaxByStateAbv(String abv) throws TaxDaoException;
 }

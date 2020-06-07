@@ -32,17 +32,18 @@ public class FMController {
             try {
                 switch (view.getMenuSelection()) {
                     case 1: // this path should display all orders after prompting for a date from user
-                        view.displayOrdersByDate(serv.getOrdersForDate(view.getOrderDate()));
+                        view.displayAllOrdersByDate(serv.getOrdersForDate(view.getOrderDate()));
                         break;
                     case 2: // prompt the user for relevant info to add an order to the program
-                        serv.confirmOrder(view.displayFinalOrderForConfirmation(serv.calculateOrderDetails(
+                        serv.confirmAddOrder(view.displayFinalOrderForConfirmation(serv.calculateOrderDetails(
                                 view.createNewOrder(serv.getAllProducts(), serv.getAllStates()))));
                         break;
                     case 3: // edit an existing order, search by date and then order num
-                        view.io.print("EDIT AN ORDER FEATURE NOT YET IMPLEMENTED");
+                        serv.editOrder(view.editOrderDetails(serv.getOrder(view.getOrderDate(),
+                                view.getOrderNum()), serv.getAllProducts(), serv.getAllStates()));
                         break;
                     case 4: // remove existing order, search by date and then order num
-                        view.io.print("REMOVE AN ORDER FEATURE NOT YET IMPLEMENTED");
+                        serv.confirmRemoval(view.displayOrderForRemoval(serv.getOrder(view.getOrderDate(), view.getOrderNum())));
                         break;
                     case 5:
                         view.displayExitMessage();

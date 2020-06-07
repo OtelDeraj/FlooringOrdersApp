@@ -1,0 +1,2 @@
+OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total
+1,Hugo Wright,KY,6.00,Laminate,350.00,1.75,2.10,612.5000,735.00,80.85,1428.35

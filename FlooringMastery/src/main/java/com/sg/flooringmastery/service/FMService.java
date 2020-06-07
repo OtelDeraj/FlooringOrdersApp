@@ -49,39 +49,52 @@ public class FMService {
     }
     
     //Add
-    public FMOrder calculateOrderDetails(FMOrder rawOrder) throws TaxDaoException {
-        FMProduct product = pd.getProductByName(rawOrder.getProduct().getMaterial());
-        FMOrder toReturn = new FMOrder(rawOrder.getDate(),
-        rawOrder.getCustomerName(), rawOrder.getState(), td.getTaxByStateAbv(rawOrder.getState()),
-        product.getMaterial(), rawOrder.getArea(), product.getCostPerSqFt(),
-        product.getLaborCostPerSqFt());
-        return toReturn;
-    }
-    
-    
+
     // this method ends the add order feature path if the order passed is null
-    public void confirmOrder(FMOrder order) throws OrderDaoException {
-        if(order != null){// order !null calls addOrder, continuing the feature path
-            addOrder(order);
+    public void confirmAddOrder(FMOrder toAdd) throws OrderDaoException, TaxDaoException {
+        if(toAdd != null){// order !null calls addOrder, continuing the feature path
+            addOrder(toAdd);
         } 
     }
     // pass through method to the orderDao to add order
-    private void addOrder(FMOrder toAdd) throws OrderDaoException{
+    private void addOrder(FMOrder toAdd) throws OrderDaoException, TaxDaoException{
         od.addOrder(toAdd);
     }
     
     //Remove
-    
+    //this method will end the removal feature path without removing the file if 
+    // passed order is null
+    public void confirmRemoval(FMOrder toRemove) throws OrderDaoException {
+        if(toRemove != null){
+            removeOrder(toRemove);
+        }
+    }
 //    public void removeOrder(FMOrder toRemove)
-    public void removeOrder(LocalDate date, int orderNum){  
-        throw new UnsupportedOperationException();
+    private void removeOrder(FMOrder toRemove) throws OrderDaoException{  
+        od.removeOrder(toRemove);
     }
     
     //Edit
-    public void editOrder(FMOrder toEdit){
-        throw new UnsupportedOperationException();
+    
+    public FMOrder getOrder(LocalDate date, int orderNum) throws OrderDaoException{
+        return od.getOrder(date, orderNum);
     }
     
+    public void editOrder(FMOrder toCalc) throws OrderDaoException, TaxDaoException{
+        FMOrder toEdit = calculateOrderDetails(toCalc);
+        od.editOrder(toEdit);
+    }
+    
+    
+    // this method builds a new order object after calculating taxes and totals
+    // it is used in the add and edit paths
+    public FMOrder calculateOrderDetails(FMOrder rawOrder) throws TaxDaoException {
+        FMProduct product = pd.getProductByName(rawOrder.getProduct().getMaterial());
+        FMTax taxRate = td.getTaxByStateAbv(rawOrder.getStateAbv());
+        
+        return new FMOrder(rawOrder, product, taxRate);
+    }
+
     
 
     
