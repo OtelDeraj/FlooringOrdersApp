@@ -127,7 +127,7 @@ public class FMView {
         io.print("Total: " + order.getTotalCost());
     }
 
-    public FMOrder displayFinalOrderForConfirmation(FMOrder order) {
+    public FMOrder displayForAddConfirmation(FMOrder order) {
         FMOrder toReturn = null;
         displayOrder(order);
         String confirm = null;
@@ -144,7 +144,7 @@ public class FMView {
         return toReturn;
     }
 
-    public FMOrder displayOrderForRemoval(FMOrder order) {
+    public FMOrder displayForRemovalConfirmation(FMOrder order) {
         FMOrder toReturn = null;
         displayOrder(order);
         String confirm = null;
@@ -161,7 +161,7 @@ public class FMView {
         return toReturn;
     }
     
-    public FMOrder displayEditConfirmation(FMOrder order) {
+    public FMOrder displayForEditConfirmation(FMOrder order) {
         FMOrder toReturn = null;
         displayOrder(order);
         String confirm = null;

@@ -5,12 +5,17 @@
  */
 package com.sg.flooringmastery.controller;
 
+import com.sg.flooringmastery.dto.FMOrder;
+import com.sg.flooringmastery.exceptions.InvalidInputException;
 import com.sg.flooringmastery.exceptions.InvalidOrderDateException;
+import com.sg.flooringmastery.exceptions.NullArgumentException;
 import com.sg.flooringmastery.exceptions.OrderDaoException;
 import com.sg.flooringmastery.exceptions.ProductDaoException;
 import com.sg.flooringmastery.exceptions.TaxDaoException;
 import com.sg.flooringmastery.service.FMService;
 import com.sg.flooringmastery.ui.FMView;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -25,38 +30,54 @@ public class FMController {
         this.view = view;
         this.serv = serv;
     }
-    //TODO change dao delimiters from :: to ,
+    
 
-    public void run(){
+    public void run() {
         boolean keepGoing = true;
         while (keepGoing) {
-            // double check to see if any information should be displayed above menu
+            
             try {
                 switch (view.getMenuSelection()) {
                     case 1: // this path should display all orders after prompting for a date from user
-                        view.displayAllOrdersByDate(serv.getOrdersForDate(view.getOrderDate()));
+                        view.displayAllOrdersByDate(
+                                serv.getOrdersForDate(
+                                        view.getOrderDate()));
                         break;
                     case 2: // prompt the user for relevant info to add an order to the program
-                        serv.confirmAddOrder(view.displayFinalOrderForConfirmation(serv.calculateOrderDetails(
-                                view.createNewOrder(serv.getAllProducts(), serv.getAllStates()))));
+                        FMOrder toAdd = view.displayForAddConfirmation(
+                                serv.calculateOrderDetails(
+                                        view.createNewOrder(serv.getAllProducts(), serv.getAllStates())));
+                        if (toAdd != null) {
+                            serv.addOrder(toAdd);
+                        }
                         break;
                     case 3: // edit an existing order, search by date and then order num
-                        serv.confirmEditOrder(view.displayEditConfirmation(serv.calculateOrderDetails(
-                                view.editOrderDetails(serv.getOrder(view.getOrderDate(),
-                                view.getOrderNum()), serv.getAllProducts(), serv.getAllStates()))));
+                        FMOrder toEdit = view.displayForEditConfirmation(
+                                serv.calculateOrderDetails(
+                                        view.editOrderDetails(
+                                                serv.getOrder(
+                                                        view.getOrderDate(),view.getOrderNum()), serv.getAllProducts(), serv.getAllStates())));
+                        if (toEdit != null) {
+                            serv.editOrder(toEdit);
+                        }
                         break;
                     case 4: // remove existing order, search by date and then order num
-                        serv.confirmRemoval(view.displayOrderForRemoval(serv.getOrder(view.getOrderDate(), view.getOrderNum())));
+                        FMOrder toRemove = view.displayForRemovalConfirmation(
+                                serv.getOrder(view.getOrderDate(), view.getOrderNum()));
+                        if (toRemove != null) {
+                            serv.removeOrder(toRemove);
+                        }
                         break;
                     case 5:
                         view.displayExitMessage();
                         keepGoing = false;
                         break;
                 }
-            } catch (OrderDaoException | TaxDaoException | ProductDaoException | InvalidOrderDateException ex) {
+            } catch (OrderDaoException | TaxDaoException | ProductDaoException 
+                    | InvalidOrderDateException | NullArgumentException | InvalidInputException ex) {
                 view.displayErrorMessage(ex.getMessage());
             }
         }
-    }
+    } 
 
 }

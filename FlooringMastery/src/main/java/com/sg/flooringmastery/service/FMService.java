@@ -14,10 +14,13 @@ import com.sg.flooringmastery.dao.TaxDaoImpl;
 import com.sg.flooringmastery.dto.FMOrder;
 import com.sg.flooringmastery.dto.FMProduct;
 import com.sg.flooringmastery.dto.FMTax;
+import com.sg.flooringmastery.exceptions.InvalidInputException;
 import com.sg.flooringmastery.exceptions.InvalidOrderDateException;
+import com.sg.flooringmastery.exceptions.NullArgumentException;
 import com.sg.flooringmastery.exceptions.OrderDaoException;
 import com.sg.flooringmastery.exceptions.ProductDaoException;
 import com.sg.flooringmastery.exceptions.TaxDaoException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -53,28 +56,19 @@ public class FMService {
     //Add
 
     // this method ends the add order feature path if the order passed is null
-    public void confirmAddOrder(FMOrder toAdd) throws OrderDaoException, TaxDaoException, InvalidOrderDateException {
-        if(toAdd != null){// order !null calls addOrder, continuing the feature path
-            addOrder(toAdd);
-        } 
-    }
-    // pass through method to the orderDao to add order
-    private void addOrder(FMOrder toAdd) throws OrderDaoException, TaxDaoException, InvalidOrderDateException{
+    public void addOrder(FMOrder toAdd) throws OrderDaoException, TaxDaoException, InvalidOrderDateException {
         od.addOrder(toAdd);
     }
+    // pass through method to the orderDao to add order
+
     
     //Remove
     //this method will end the removal feature path without removing the file if 
     // passed order is null
-    public void confirmRemoval(FMOrder toRemove) throws OrderDaoException, InvalidOrderDateException {
-        if(toRemove != null){
-            removeOrder(toRemove);
-        }
-    }
-//    public void removeOrder(FMOrder toRemove)
-    private void removeOrder(FMOrder toRemove) throws OrderDaoException, InvalidOrderDateException{  
+    public void removeOrder(FMOrder toRemove) throws OrderDaoException, InvalidOrderDateException {
         od.removeOrder(toRemove);
     }
+//    public void removeOrder(FMOrder toRemove)
     
     //Edit
     
@@ -82,24 +76,64 @@ public class FMService {
         return od.getOrder(date, orderNum);
     }
     
-    public void confirmEditOrder(FMOrder toEdit) throws OrderDaoException, TaxDaoException, ProductDaoException, InvalidOrderDateException{
-        if(toEdit != null){
-            editOrder(toEdit);
-        }
+    public void editOrder(FMOrder toEdit) throws OrderDaoException, TaxDaoException, ProductDaoException, InvalidOrderDateException, NullArgumentException{
+        od.editOrder(toEdit);
+
     }
     
-    private void editOrder(FMOrder toEdit) throws OrderDaoException, TaxDaoException, ProductDaoException, InvalidOrderDateException{
-        od.editOrder(toEdit);
-    }
+//    private void editOrder(FMOrder toEdit) throws OrderDaoException, TaxDaoException, ProductDaoException, InvalidOrderDateException{
+//        od.editOrder(toEdit);
+//    }
     
     
     // this method builds a new order object after calculating taxes and totals
     // it is used in the add and edit paths
-    public FMOrder calculateOrderDetails(FMOrder rawOrder) throws TaxDaoException, ProductDaoException {
+    public FMOrder calculateOrderDetails(FMOrder rawOrder) throws TaxDaoException, ProductDaoException, InvalidInputException {
+        validateOrderDetails(rawOrder);
         FMProduct product = pd.getProductByName(rawOrder.getProduct().getMaterial());
         FMTax taxRate = td.getTaxByStateAbv(rawOrder.getStateAbv());
         
         return new FMOrder(rawOrder, product, taxRate);
+    }
+    
+    
+    // --- Validatiions ---
+    
+    private void validateOrderDetails(FMOrder toCheck) throws InvalidInputException{
+        
+        validateCustomerName(toCheck.getCustomerName());
+        validateMaterial(toCheck.getProduct().getMaterial());
+        validateArea(toCheck.getArea());
+        validateState(toCheck.getTaxRate().getStateAbv());
+        
+    }
+
+    private void validateCustomerName(String customerName) throws InvalidInputException {
+        if(customerName.isBlank()){
+            throw new InvalidInputException("Customer name cannot be empty.");
+        } else if(customerName.contains(",")){
+            throw new InvalidInputException("Illegal character (,) cannot be present in name.");
+        }
+    }
+
+    private void validateMaterial(String material) throws InvalidInputException {
+        if(material.isBlank()){
+            throw new InvalidInputException("Material choice cannot be blank.");
+        }
+    }
+
+    private void validateArea(BigDecimal area) throws InvalidInputException {
+        if(area.toString().isBlank()){
+            throw new InvalidInputException("Area value must be given.");
+        } else if(area.compareTo(new BigDecimal("100")) == -1){
+            throw new InvalidInputException("All orders must have an area greater than 100.");
+        }
+    }
+
+    private void validateState(String stateAbv) throws InvalidInputException {
+        if(stateAbv.isBlank()){
+            throw new InvalidInputException("State abbreviation cannot be blank.");
+        }
     }
 
     

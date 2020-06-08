@@ -59,23 +59,23 @@ public class OrderDaoImpl implements ODao {
     }
 
     private String convertOrderToLine(FMOrder o) {
-        return o.getOrderNum() + "::"
-                + o.getCustomerName() + "::"
-                + o.getTaxRate().getStateAbv() + "::"
-                + o.getTaxRate().getStateTaxRate() + "::"
-                + o.getProduct().getMaterial() + "::"
-                + o.getArea() + "::"
-                + o.getProduct().getCostPerSqFt() + "::"
-                + o.getProduct().getLaborCostPerSqFt() + "::"
-                + o.getMaterialCost() + "::"
-                + o.getLaborCost() + "::"
-                + o.getSalesTax() + "::"
+        return o.getOrderNum() + "," 
+                + o.getCustomerName() + ","
+                + o.getTaxRate().getStateAbv() + ","
+                + o.getTaxRate().getStateTaxRate() + ","
+                + o.getProduct().getMaterial() + ","
+                + o.getArea() + ","
+                + o.getProduct().getCostPerSqFt() + ","
+                + o.getProduct().getLaborCostPerSqFt() + ","
+                + o.getMaterialCost() + ","
+                + o.getLaborCost() + ","
+                + o.getSalesTax() + ","
                 + o.getTotalCost();
     }
 
     private FMOrder convertLineToOrder(String row) {
 
-        String[] cells = row.split("::");
+        String[] cells = row.split(",");
 
         int orderNum = Integer.parseInt(cells[0]);
         String customerName = cells[1];

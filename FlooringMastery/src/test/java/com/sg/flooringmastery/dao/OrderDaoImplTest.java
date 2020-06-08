@@ -5,11 +5,16 @@
  */
 package com.sg.flooringmastery.dao;
 
+import com.sg.flooringmastery.dto.FMOrder;
+import com.sg.flooringmastery.exceptions.InvalidOrderDateException;
+import com.sg.flooringmastery.exceptions.OrderDaoException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -55,7 +60,10 @@ public class OrderDaoImplTest {
      * Test of getOrdersForDate method, of class OrderDaoImpl.
      */
     @Test
-    public void testGetOrdersForDate() {
+    public void testGetOrdersForDateGoldenPath() throws OrderDaoException, InvalidOrderDateException {
+        List<FMOrder> allOrders = toTest.getOrdersForDate(LocalDate.now());
+        
+        
     }
 
     /**
