@@ -5,7 +5,9 @@
  */
 package com.sg.flooringmastery.controller;
 
+import com.sg.flooringmastery.exceptions.InvalidOrderDateException;
 import com.sg.flooringmastery.exceptions.OrderDaoException;
+import com.sg.flooringmastery.exceptions.ProductDaoException;
 import com.sg.flooringmastery.exceptions.TaxDaoException;
 import com.sg.flooringmastery.service.FMService;
 import com.sg.flooringmastery.ui.FMView;
@@ -25,7 +27,7 @@ public class FMController {
     }
     //TODO change dao delimiters from :: to ,
 
-    public void run() {
+    public void run(){
         boolean keepGoing = true;
         while (keepGoing) {
             // double check to see if any information should be displayed above menu
@@ -39,8 +41,9 @@ public class FMController {
                                 view.createNewOrder(serv.getAllProducts(), serv.getAllStates()))));
                         break;
                     case 3: // edit an existing order, search by date and then order num
-                        serv.editOrder(view.editOrderDetails(serv.getOrder(view.getOrderDate(),
-                                view.getOrderNum()), serv.getAllProducts(), serv.getAllStates()));
+                        serv.confirmEditOrder(view.displayEditConfirmation(serv.calculateOrderDetails(
+                                view.editOrderDetails(serv.getOrder(view.getOrderDate(),
+                                view.getOrderNum()), serv.getAllProducts(), serv.getAllStates()))));
                         break;
                     case 4: // remove existing order, search by date and then order num
                         serv.confirmRemoval(view.displayOrderForRemoval(serv.getOrder(view.getOrderDate(), view.getOrderNum())));
@@ -50,7 +53,7 @@ public class FMController {
                         keepGoing = false;
                         break;
                 }
-            } catch (OrderDaoException | TaxDaoException ex) {
+            } catch (OrderDaoException | TaxDaoException | ProductDaoException | InvalidOrderDateException ex) {
                 view.displayErrorMessage(ex.getMessage());
             }
         }

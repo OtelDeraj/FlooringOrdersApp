@@ -15,6 +15,8 @@ import com.sg.flooringmastery.dao.TaxDaoImpl;
 import com.sg.flooringmastery.service.FMService;
 import com.sg.flooringmastery.ui.FMView;
 import java.time.LocalDate;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  *
@@ -23,13 +25,11 @@ import java.time.LocalDate;
 public class App {
 
     public static void main(String[] args) {
-        ODao od = new OrderDaoImpl("Orders"); // TODO: remove the hard coding here, just using it for some end of day tests
-        PDao pd = new ProductDaoImpl("Products.txt");
-        TDao td = new TaxDaoImpl("Taxes.txt");
-        FMView view = new FMView();
-        FMService serv = new FMService(od, pd, td);
-        FMController controller = new FMController(view, serv);
+        ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+        
+        FMController controller = ctx.getBean("controller", FMController.class);
         controller.run();
+        
     }
 
 }

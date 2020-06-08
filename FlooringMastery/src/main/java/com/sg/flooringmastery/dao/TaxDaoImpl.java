@@ -6,6 +6,7 @@
 package com.sg.flooringmastery.dao;
 
 import com.sg.flooringmastery.dto.FMTax;
+import com.sg.flooringmastery.exceptions.TaxDaoException;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -27,7 +28,7 @@ public class TaxDaoImpl implements TDao {
     }
 
     @Override
-    public List<FMTax> getAllStates() {
+    public List<FMTax> getAllStates() throws TaxDaoException {
         List<FMTax> allStates = new ArrayList<>();
         
         try{
@@ -43,13 +44,13 @@ public class TaxDaoImpl implements TDao {
             scnFile.close();
             
         } catch(FileNotFoundException ex){
-            
+            throw new TaxDaoException("Could not find file" + PATH + ".", ex);
         }
         return allStates;
     }
     
     @Override
-    public FMTax getTaxByStateAbv(String abv) {
+    public FMTax getTaxByStateAbv(String abv) throws TaxDaoException {
         FMTax toReturn = null;
         List<FMTax> allStates = getAllStates();
         for(FMTax t : allStates) {

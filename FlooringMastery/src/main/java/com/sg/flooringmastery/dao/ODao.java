@@ -6,6 +6,7 @@
 package com.sg.flooringmastery.dao;
 
 import com.sg.flooringmastery.dto.FMOrder;
+import com.sg.flooringmastery.exceptions.InvalidOrderDateException;
 import com.sg.flooringmastery.exceptions.OrderDaoException;
 import java.time.LocalDate;
 import java.util.List;
@@ -16,14 +17,14 @@ import java.util.List;
  */
 public interface ODao {
         
-    List<FMOrder> getOrdersForDate(LocalDate date) throws OrderDaoException;
+    List<FMOrder> getOrdersForDate(LocalDate date) throws OrderDaoException, InvalidOrderDateException;
     
-    FMOrder getOrder(LocalDate date, int orderNum) throws OrderDaoException;
+    FMOrder getOrder(LocalDate date, int orderNum) throws OrderDaoException, InvalidOrderDateException;
         
-    FMOrder addOrder(FMOrder toAdd) throws OrderDaoException;
+    void addOrder(FMOrder toAdd) throws OrderDaoException, InvalidOrderDateException;
     
-    void editOrder(FMOrder selectedOrder) throws OrderDaoException;
+    void editOrder(FMOrder selectedOrder) throws OrderDaoException, InvalidOrderDateException;
     
-    void removeOrder(FMOrder toRemove) throws OrderDaoException;
+    void removeOrder(FMOrder toRemove) throws OrderDaoException, InvalidOrderDateException;
     
 }

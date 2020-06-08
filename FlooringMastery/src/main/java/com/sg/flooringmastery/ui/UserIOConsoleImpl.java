@@ -238,18 +238,17 @@ public class UserIOConsoleImpl implements UserIO {// implementation of UserIO in
     @Override
     public String editString(String prompt, String originalValue) {
         String toReturn = readString(prompt);
-        if (toReturn.isEmpty()) {
+        if (toReturn.isBlank()) {
             toReturn = originalValue;
         }
         return toReturn;
     }
     
     @Override
-    public BigDecimal editBigDecimal(String prompt, BigDecimal originalNumber){
-        BigDecimal toReturn = readBigDecimal(prompt, new BigDecimal("100"),
-                new BigDecimal(Integer.MAX_VALUE));
+    public BigDecimal editBigDecimal(String prompt, BigDecimal originalNumber, BigDecimal min, BigDecimal max){
+        BigDecimal toReturn = readBigDecimal(prompt, min, max);
         
-        if(toReturn.toString().isEmpty()){
+        if(toReturn.toString().isBlank()){
             toReturn = originalNumber;
         }
         return toReturn;
@@ -304,7 +303,7 @@ public class UserIOConsoleImpl implements UserIO {// implementation of UserIO in
         while(!validInput){
             try{
                 String userInput = readString(prompt);
-                if(userInput.isEmpty()){
+                if(userInput.isBlank()){
                     validInput = true;
                 } else {
                     toReturn = LocalDate.parse(userInput, formatter);

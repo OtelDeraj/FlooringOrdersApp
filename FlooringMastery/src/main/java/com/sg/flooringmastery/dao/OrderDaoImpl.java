@@ -6,6 +6,7 @@
 package com.sg.flooringmastery.dao;
 
 import com.sg.flooringmastery.dto.FMOrder;
+import com.sg.flooringmastery.exceptions.InvalidOrderDateException;
 import com.sg.flooringmastery.exceptions.OrderDaoException;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -37,7 +38,7 @@ public class OrderDaoImpl implements ODao {
         this.DIRECTORY = directory;
     }
 
-    public void writeFile(List<FMOrder> toWrite, LocalDate date) throws OrderDaoException {
+    private void writeFile(List<FMOrder> toWrite, LocalDate date) throws OrderDaoException {
         String path = convertDateToPath(date);
         try {
             PrintWriter write = new PrintWriter(new FileWriter(path));
@@ -58,23 +59,23 @@ public class OrderDaoImpl implements ODao {
     }
 
     private String convertOrderToLine(FMOrder o) {
-        return o.getOrderNum() + ","
-                + o.getCustomerName() + ","
-                + o.getTaxRate().getStateAbv() + ","
-                + o.getTaxRate().getStateTaxRate() + ","
-                + o.getProduct().getMaterial() + ","
-                + o.getArea() + ","
-                + o.getProduct().getCostPerSqFt() + ","
-                + o.getProduct().getLaborCostPerSqFt() + ","
-                + o.getMaterialCost() + ","
-                + o.getLaborCost() + ","
-                + o.getSalesTax() + ","
+        return o.getOrderNum() + "::"
+                + o.getCustomerName() + "::"
+                + o.getTaxRate().getStateAbv() + "::"
+                + o.getTaxRate().getStateTaxRate() + "::"
+                + o.getProduct().getMaterial() + "::"
+                + o.getArea() + "::"
+                + o.getProduct().getCostPerSqFt() + "::"
+                + o.getProduct().getLaborCostPerSqFt() + "::"
+                + o.getMaterialCost() + "::"
+                + o.getLaborCost() + "::"
+                + o.getSalesTax() + "::"
                 + o.getTotalCost();
     }
 
     private FMOrder convertLineToOrder(String row) {
 
-        String[] cells = row.split(",");
+        String[] cells = row.split("::");
 
         int orderNum = Integer.parseInt(cells[0]);
         String customerName = cells[1];
@@ -96,7 +97,7 @@ public class OrderDaoImpl implements ODao {
     }
 
     @Override
-    public List<FMOrder> getOrdersForDate(LocalDate date) {
+    public List<FMOrder> getOrdersForDate(LocalDate date) throws InvalidOrderDateException {
         String path = convertDateToPath(date);
         List<FMOrder> allOrders = new ArrayList<>();
         try {
@@ -111,7 +112,7 @@ public class OrderDaoImpl implements ODao {
             scnFile.close();
 
         } catch (FileNotFoundException ex) {
-
+            throw new InvalidOrderDateException("Given Date of Order does not exist.", ex);
         }
         return allOrders;
     }
@@ -119,7 +120,7 @@ public class OrderDaoImpl implements ODao {
 
 
     @Override
-    public FMOrder getOrder(LocalDate date, int orderNum) {
+    public FMOrder getOrder(LocalDate date, int orderNum) throws InvalidOrderDateException {
 
         List<FMOrder> allOrders = getOrdersForDate(date);
 
@@ -136,7 +137,7 @@ public class OrderDaoImpl implements ODao {
     }
 
     @Override
-    public FMOrder addOrder(FMOrder toAdd) throws OrderDaoException {
+    public void addOrder(FMOrder toAdd) throws OrderDaoException, InvalidOrderDateException {
         List<FMOrder> allOrders = getOrdersForDate(toAdd.getDate());
 
         int maxOrderNum = 0;
@@ -150,12 +151,10 @@ public class OrderDaoImpl implements ODao {
 
         allOrders.add(toAdd);
         writeFile(allOrders, toAdd.getDate());
-
-        return toAdd;
     }
     
     @Override
-    public void editOrder(FMOrder selectedOrder) throws OrderDaoException {
+    public void editOrder(FMOrder selectedOrder) throws OrderDaoException, InvalidOrderDateException {
         List<FMOrder> allOrders = getOrdersForDate(selectedOrder.getDate());
         int index = -1;
         for (int i = 0; i < allOrders.size(); i++) {
@@ -172,7 +171,7 @@ public class OrderDaoImpl implements ODao {
     }
     
     @Override
-    public void removeOrder(FMOrder toRemove) throws OrderDaoException {
+    public void removeOrder(FMOrder toRemove) throws OrderDaoException, InvalidOrderDateException {
         List<FMOrder> allOrders = getOrdersForDate(toRemove.getDate());
         
         int index = -1;

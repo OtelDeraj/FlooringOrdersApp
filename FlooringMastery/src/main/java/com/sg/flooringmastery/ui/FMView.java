@@ -9,6 +9,7 @@ import com.sg.flooringmastery.dto.FMOrder;
 import com.sg.flooringmastery.dto.FMProduct;
 import com.sg.flooringmastery.dto.FMTax;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -44,14 +45,22 @@ public class FMView {
     public FMOrder createNewOrder(List<FMProduct> productList, List<FMTax> stateList) {
         FMOrder toReturn = new FMOrder();
         FMProduct pDetails = new FMProduct();
-        toReturn.setDate(io.readDate("Please enter the desired date of service: "));
-        toReturn.setCustomerName(io.readString("Please enter a name for the order: "));
+        toReturn.setDate(getFutureDate("Please enter the desired date of service: "));
+        String name = "";
+        while (name.isEmpty()) {
+            name = io.readString("Please enter a name for the order: ");
+        }
+        toReturn.setCustomerName(name);
         displayAllStates(stateList);
         toReturn.setStateAbv(getUsersStateTaxChoice(io.readString("Plese enter a state "
                 + "abbreviation from the list above: "), stateList));
         displayAllProducts(productList);
-        pDetails.setMaterial(getUsersMaterialChoice(io.readString("Please enter a material "
-                + "from the list above: "), productList));
+        String material = null;
+        while (material == null) {
+            material = getUsersMaterialChoice(io.readString("Please enter a material "
+                    + "from the list above: "), productList);
+        }
+        pDetails.setMaterial(material);
         toReturn.setProduct(pDetails);
         toReturn.setArea(io.readBigDecimal("Please enter the square footage of the order."
                 + " Sq Footage must be 100ft or greater", new BigDecimal("100"), new BigDecimal(Integer.MAX_VALUE)));
@@ -73,20 +82,20 @@ public class FMView {
                 + "[" + toEdit.getCustomerName() + "]: ", toEdit.getCustomerName()));
         displayAllStates(stateList);
         String abv = null;
-        while(abv == null){
+        while (abv == null) {
             abv = getUsersStateTaxChoice(io.editString("Enter a new State abbreviation or press Enter to keep "
-                + "[" + toEdit.getTaxRate().getStateAbv() + "]: ", toEdit.getTaxRate().getStateAbv()), stateList);
+                    + "[" + toEdit.getTaxRate().getStateAbv() + "]: ", toEdit.getTaxRate().getStateAbv()), stateList);
         }
         toEdit.setStateAbv(abv);
         displayAllProducts(productList);
         String material = null;
-        while(material == null){
-                material = getUsersMaterialChoice(io.editString("Enter a new product material or press Enter to keep "
-                + "[" + toEdit.getProduct().getMaterial() + "]: ", toEdit.getProduct().getMaterial()), productList);
+        while (material == null) {
+            material = getUsersMaterialChoice(io.editString("Enter a new product material or press Enter to keep "
+                    + "[" + toEdit.getProduct().getMaterial() + "]: ", toEdit.getProduct().getMaterial()), productList);
         }
         toEdit.getProduct().setMaterial(material);
         toEdit.setArea(io.editBigDecimal("Enter a new area in sq feet for the order or press Enter to keep "
-                + "[" + toEdit.getArea() + "]: ", toEdit.getArea()));
+                + "[" + toEdit.getArea() + "]: ", toEdit.getArea(), new BigDecimal("100"), new BigDecimal(Integer.MAX_VALUE)));
 
         return toEdit;
     }
@@ -124,7 +133,7 @@ public class FMView {
         String confirm = null;
         boolean validAnswer = false;
         while (!validAnswer) {
-            confirm = io.readString("Confirm order. Type Yes or No.");
+            confirm = io.readString("Confirm order? Type Yes or No.");
             if (confirm.equalsIgnoreCase("yes")) {
                 toReturn = order;
                 validAnswer = true;
@@ -141,7 +150,24 @@ public class FMView {
         String confirm = null;
         boolean validAnswer = false;
         while (!validAnswer) {
-            confirm = io.readString("Remove Order. Type Yes or No.");
+            confirm = io.readString("Remove Order? Type Yes or No.");
+            if (confirm.equalsIgnoreCase("yes")) {
+                toReturn = order;
+                validAnswer = true;
+            } else if (confirm.equalsIgnoreCase("no")) {
+                validAnswer = true;
+            }
+        }
+        return toReturn;
+    }
+    
+    public FMOrder displayEditConfirmation(FMOrder order) {
+        FMOrder toReturn = null;
+        displayOrder(order);
+        String confirm = null;
+        boolean validAnswer = false;
+        while (!validAnswer) {
+            confirm = io.readString("Confirm Edit? Type Yes or No.");
             if (confirm.equalsIgnoreCase("yes")) {
                 toReturn = order;
                 validAnswer = true;
@@ -155,9 +181,9 @@ public class FMView {
     public void displayAllOrdersByDate(List<FMOrder> allOrders) {
         io.print("Order #, Customer Name, State, Material, Area, Total");
         for (FMOrder o : allOrders) {
-            io.print("#" + o.getOrderNum() + ", " + o.getCustomerName() + ", "
-                    + o.getTaxRate().getStateAbv() + ", " + o.getProduct().getMaterial() + ", "
-                    + o.getArea() + ", " + o.getTotalCost());
+            io.print("#" + o.getOrderNum() + " :: " + o.getCustomerName() + " :: "
+                    + o.getTaxRate().getStateAbv() + " :: " + o.getProduct().getMaterial() + " :: "
+                    + o.getArea() + " :: " + o.getTotalCost());
         }
     }
 
@@ -167,7 +193,7 @@ public class FMView {
     }
 
     public void displayErrorMessage(String message) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        io.print(message);
     }
 
     private String getUsersStateTaxChoice(String input, List<FMTax> stateList) {
@@ -189,6 +215,18 @@ public class FMView {
 
         return material;
 
+    }
+
+    private LocalDate getFutureDate(String prompt) {
+        boolean validInput = false;
+        LocalDate toCheck = null;
+        while (!validInput) {
+            toCheck = io.readDate(prompt);
+            if (toCheck.compareTo(LocalDate.now()) >= 0) {
+                validInput = true;
+            }
+        }
+        return toCheck;
     }
 
 }

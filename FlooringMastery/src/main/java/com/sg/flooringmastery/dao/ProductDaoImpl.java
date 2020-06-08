@@ -6,6 +6,7 @@
 package com.sg.flooringmastery.dao;
 
 import com.sg.flooringmastery.dto.FMProduct;
+import com.sg.flooringmastery.exceptions.ProductDaoException;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -40,7 +41,7 @@ public class ProductDaoImpl implements PDao {
     }
 
     @Override
-    public List<FMProduct> getAllProducts() {
+    public List<FMProduct> getAllProducts() throws ProductDaoException {
         List<FMProduct> allProducts = new ArrayList<>();
 
         try {
@@ -54,13 +55,13 @@ public class ProductDaoImpl implements PDao {
             }
             scnFile.close();
         } catch (FileNotFoundException ex) {
-            
+            throw new ProductDaoException("File " + PATH + " not found.", ex);
         }
         return allProducts;
     }
 
     @Override
-    public FMProduct getProductByName(String name) {
+    public FMProduct getProductByName(String name) throws ProductDaoException {
         FMProduct toReturn = null;
         List<FMProduct> allProducts = getAllProducts();
         for(FMProduct p : allProducts){

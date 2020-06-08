@@ -5,6 +5,11 @@
  */
 package com.sg.flooringmastery.dao;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -18,6 +23,8 @@ import static org.junit.Assert.*;
  */
 public class OrderDaoImplTest {
     
+    ODao toTest = new OrderDaoImpl(Paths.get("TestData", "testOrders.txt").toString());
+    
     public OrderDaoImplTest() {
     }
     
@@ -30,7 +37,14 @@ public class OrderDaoImplTest {
     }
     
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
+        Path testPath = Paths.get("TestData", "testOrders.txt");
+        Path seedPath = Paths.get("TestData", "seedOrders.txt");
+        
+        File testFile = testPath.toFile();
+        
+        testFile.delete();
+        Files.copy(seedPath, testPath);
     }
     
     @After
@@ -45,13 +59,6 @@ public class OrderDaoImplTest {
     }
 
     /**
-     * Test of editOrder method, of class OrderDaoImpl.
-     */
-    @Test
-    public void testEditOrder() throws Exception {
-    }
-
-    /**
      * Test of getOrder method, of class OrderDaoImpl.
      */
     @Test
@@ -63,6 +70,20 @@ public class OrderDaoImplTest {
      */
     @Test
     public void testAddOrder() throws Exception {
+    }
+
+    /**
+     * Test of editOrder method, of class OrderDaoImpl.
+     */
+    @Test
+    public void testEditOrder() throws Exception {
+    }
+
+    /**
+     * Test of removeOrder method, of class OrderDaoImpl.
+     */
+    @Test
+    public void testRemoveOrder() throws Exception {
     }
     
 }

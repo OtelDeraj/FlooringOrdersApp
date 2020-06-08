@@ -1,3 +1,4 @@
 OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total
-1,IZZ,WA,4.45,Tile,500.00,3.50,4.15,1750.0000,2075.00,170.21,3995.21
-2,FAKER,CA,25.00,Tile,100.00,3.50,4.15,350.0000,415.00,191.25,956.25
+1::IZZ::WA::4.45::Tile::500.00::3.50::4.15::1750.0000::2075.00::170.21::3995.21
+2::FAKER::CA::25.00::Tile::100.00::3.50::4.15::350.0000::415.00::191.25::956.25
+3::Acme, inc.::KY::6.00::Wood::300.00::5.15::4.75::1545.0000::1425.00::178.20::3148.20

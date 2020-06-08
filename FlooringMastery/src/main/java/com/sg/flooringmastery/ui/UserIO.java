@@ -40,7 +40,7 @@ public interface UserIO { // basic IO interface
     
     BigDecimal readBigDecimal(String prompt, BigDecimal min, BigDecimal max);
     
-    BigDecimal editBigDecimal(String prompt, BigDecimal originalNumber);
+    BigDecimal editBigDecimal(String prompt, BigDecimal originalNumber, BigDecimal min, BigDecimal max);
     
     LocalDate readDate(String prompt);
     

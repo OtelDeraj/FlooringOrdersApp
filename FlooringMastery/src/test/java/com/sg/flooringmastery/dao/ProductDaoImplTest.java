@@ -5,6 +5,11 @@
  */
 package com.sg.flooringmastery.dao;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -18,6 +23,8 @@ import static org.junit.Assert.*;
  */
 public class ProductDaoImplTest {
     
+    PDao toTest = new ProductDaoImpl("testProducts.txt");
+    
     public ProductDaoImplTest() {
     }
     
@@ -30,7 +37,14 @@ public class ProductDaoImplTest {
     }
     
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
+        Path testPath = Paths.get("TestData", "testProducts.txt");
+        Path seedPath = Paths.get("TestData", "seedProducts.txt");
+        
+        File testFile = testPath.toFile();
+        
+        testFile.delete();
+        Files.copy(seedPath, testPath);
     }
     
     @After

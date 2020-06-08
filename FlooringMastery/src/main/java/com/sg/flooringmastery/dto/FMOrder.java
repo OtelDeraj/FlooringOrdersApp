@@ -61,7 +61,7 @@ public class FMOrder {
         this.area = rawOrder.getArea();
         
         this.materialCost = (this.product.getCostPerSqFt()
-                .multiply(this.area));
+                .multiply(this.area).setScale(2, RoundingMode.HALF_UP));
         this.laborCost = (this.product.getLaborCostPerSqFt()
                 .multiply(this.area).setScale(2, RoundingMode.HALF_UP));
         this.salesTax = (this.materialCost.add(this.laborCost))

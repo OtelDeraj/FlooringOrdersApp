@@ -4,6 +4,8 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
+
+
 <beans xmlns="http://www.springframework.org/schema/beans"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="
@@ -18,33 +20,31 @@ and open the template in the editor.
                 http://www.springframework.org/schema/aop
                 http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
 
-<bean id="io" class="com.sg.flooringmastery.ui.UserIOConsoleImpl"/>
 
-<bean id="od" class="com.sg.flooringmastery.dao.OrderDaoImpl">
-    <constructor-arg value="Orders"/>
-</bean>
-
-<bean id="pd" class="com.sg.flooringmastery.dao.ProductDaoImpl">
-    <constructor-arg value="Products.txt"/>
-</bean>
-
-<bean id="td" class="com.sg.flooringmastery.dao.TaxDaoImpl">
-    <constructor-arg value="Taxes.txt"/>
-</bean>
-
-<bean id="view" class="com.sg.flooringmastery.ui.FMView"/>
-
-<bean id="serv" class="com.sg.flooringmastery.service.FMService">
-    <constructor-arg ref="od"/>
-    <constructor-arg ref="pd"/>
-    <constructor-arg ref="td"/>
-</bean>
-
-<bean id="controller" class="com.sg.flooringmastery.controller.FMController">
-    <constructor-arg ref="view"/>
-    <constructor-arg ref="serv"/>
-</bean>
+    <bean id="oDao" class="com.sg.flooringmastery.dao.OrdDaoImpl">
+        <constructor-arg value="testOrders.txt"/>
+    </bean>
+    
+    <bean id="pDao" class="com.sg.flooringmastery.dao.ProductDaoImpl">
+        <constructor-arg value="testProducts.txt"/>
+    </bean>
+    
+    <bean id="tDao" class="com.sg.flooringmastery.dao.TaxDaoImpl">
+        <constructor-arg value="testTaxes.txt"/>
+    </bean>
+    
+    <bean id="inMemODao" class="com.sg.flooringmastery.dao.InMemODao"/>
+    
+    <bean id="inMemPDao" class="com.sg.flooringmastery.dao.InMemPDao"/>
+    
+    <bean id="inMemTDao" class="com.sg.flooringmastery.dao.InMemTDao"/>
+    
+    
+    <bean id="serv" class="com.sg.flooringmastery.service.FMService">
+        <constructor-arg ref="inMemODao"/>
+        <constructor-arg ref="inMemPDao"/>
+        <constructor-arg reg="inMemTDao"/>
+    </bean>
 
 
 </beans>
-
