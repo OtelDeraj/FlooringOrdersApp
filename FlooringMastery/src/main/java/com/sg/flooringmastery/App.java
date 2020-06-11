@@ -6,15 +6,7 @@
 package com.sg.flooringmastery;
 
 import com.sg.flooringmastery.controller.FMController;
-import com.sg.flooringmastery.dao.ODao;
-import com.sg.flooringmastery.dao.OrderDaoImpl;
-import com.sg.flooringmastery.dao.PDao;
-import com.sg.flooringmastery.dao.ProductDaoImpl;
-import com.sg.flooringmastery.dao.TDao;
-import com.sg.flooringmastery.dao.TaxDaoImpl;
-import com.sg.flooringmastery.service.FMService;
-import com.sg.flooringmastery.ui.FMView;
-import java.time.LocalDate;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

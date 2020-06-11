@@ -5,11 +5,17 @@
  */
 package com.sg.flooringmastery.dao;
 
+import com.sg.flooringmastery.dto.FMProduct;
+import com.sg.flooringmastery.exceptions.ProductDaoException;
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -23,7 +29,7 @@ import static org.junit.Assert.*;
  */
 public class ProductDaoImplTest {
     
-    PDao toTest = new ProductDaoImpl("testProducts.txt");
+    PDao pd = new ProductDaoImpl("testProducts.txt");
     
     public ProductDaoImplTest() {
     }
@@ -52,24 +58,42 @@ public class ProductDaoImplTest {
     }
 
     /**
-     * Test of convertLineToProduct method, of class ProductDaoImpl.
-     */
-    @Test
-    public void testConvertLineToProduct() {
-    }
-
-    /**
      * Test of getAllProducts method, of class ProductDaoImpl.
      */
     @Test
-    public void testGetAllProducts() {
+    public void testGetAllProductsGoldenPath() {
+        try {
+            List<FMProduct> allProducts = pd.getAllProducts();
+            FMProduct first = allProducts.get(0);
+            FMProduct last = allProducts.get(allProducts.size() - 1);
+            assertEquals("Carpet", first.getMaterial());
+            assertEquals("Wood", last.getMaterial());
+        } catch (ProductDaoException ex) {
+            fail("Should not hit ProductDaoException in golden path");
+        }
     }
 
     /**
      * Test of getProductByName method, of class ProductDaoImpl.
      */
     @Test
-    public void testGetProductByName() {
+    public void testGetProductByNameGoldenPath() {
+        try {
+            FMProduct testProduct = pd.getProductByName("Tile");
+            assertEquals(new BigDecimal("4.15"), testProduct.getLaborCostPerSqFt());
+        } catch (ProductDaoException ex) {
+            fail("Should not hit ProductDaoException in golden path");
+        }
+    }
+    
+    @Test
+    public void testGetProductByNameBadName(){
+        try {
+            FMProduct testProduct = pd.getProductByName("Plastic");
+            fail("Should have hit ProductDaoException");
+        } catch (ProductDaoException ex) {
+
+        }
     }
     
 }

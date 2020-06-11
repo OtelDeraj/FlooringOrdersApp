@@ -72,7 +72,7 @@ public class FMService {
     
     //Edit
     
-    public FMOrder getOrder(LocalDate date, int orderNum) throws OrderDaoException, InvalidOrderDateException{
+    public FMOrder getOrder(LocalDate date, int orderNum) throws OrderDaoException, InvalidOrderDateException, InvalidInputException{
         return od.getOrder(date, orderNum);
     }
     
@@ -88,7 +88,7 @@ public class FMService {
     
     // this method builds a new order object after calculating taxes and totals
     // it is used in the add and edit paths
-    public FMOrder calculateOrderDetails(FMOrder rawOrder) throws TaxDaoException, ProductDaoException, InvalidInputException {
+    public FMOrder calculateOrderDetails(FMOrder rawOrder) throws TaxDaoException, ProductDaoException, InvalidInputException, InvalidOrderDateException {
         validateOrderDetails(rawOrder);
         FMProduct product = pd.getProductByName(rawOrder.getProduct().getMaterial());
         FMTax taxRate = td.getTaxByStateAbv(rawOrder.getStateAbv());
@@ -99,8 +99,9 @@ public class FMService {
     
     // --- Validatiions ---
     
-    private void validateOrderDetails(FMOrder toCheck) throws InvalidInputException{
+    private void validateOrderDetails(FMOrder toCheck) throws InvalidInputException, InvalidOrderDateException{
         
+        validateFutureDate(toCheck.getDate());
         validateCustomerName(toCheck.getCustomerName());
         validateMaterial(toCheck.getProduct().getMaterial());
         validateArea(toCheck.getArea());
@@ -134,6 +135,13 @@ public class FMService {
         if(stateAbv.isBlank()){
             throw new InvalidInputException("State abbreviation cannot be blank.");
         }
+    }
+
+    private void validateFutureDate(LocalDate date) throws InvalidOrderDateException {
+        if (date.compareTo(LocalDate.now()) < 0) {
+                throw new InvalidOrderDateException("Order dates cannot be made for past dates.");
+            }
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     

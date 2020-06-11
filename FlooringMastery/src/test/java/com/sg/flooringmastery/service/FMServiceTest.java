@@ -5,6 +5,17 @@
  */
 package com.sg.flooringmastery.service;
 
+import com.sg.flooringmastery.dto.FMOrder;
+import com.sg.flooringmastery.dto.FMProduct;
+import com.sg.flooringmastery.exceptions.InvalidInputException;
+import com.sg.flooringmastery.exceptions.InvalidOrderDateException;
+import com.sg.flooringmastery.exceptions.ProductDaoException;
+import com.sg.flooringmastery.exceptions.TaxDaoException;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -19,84 +30,203 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @author Isaia
  */
 public class FMServiceTest {
-    
+
     FMService serv;
-    
+    LocalDate date = LocalDate.of(2962, 12, 8);
+
     public FMServiceTest() {
         ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
         serv = ctx.getBean("serv", FMService.class);
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
-    }
-
-    /**
-     * Test of getOrdersForDate method, of class FMService.
-     */
-    @Test
-    public void testGetOrdersForDate() throws Exception {
-    }
-
-    /**
-     * Test of getAllStates method, of class FMService.
-     */
-    @Test
-    public void testGetAllStates() throws Exception {
-    }
-
-    /**
-     * Test of getAllProducts method, of class FMService.
-     */
-    @Test
-    public void testGetAllProducts() {
-    }
-
-    /**
-     * Test of confirmAddOrder method, of class FMService.
-     */
-    @Test
-    public void testConfirmAddOrder() throws Exception {
-    }
-
-    /**
-     * Test of confirmRemoval method, of class FMService.
-     */
-    @Test
-    public void testConfirmRemoval() throws Exception {
-    }
-
-    /**
-     * Test of getOrder method, of class FMService.
-     */
-    @Test
-    public void testGetOrder() throws Exception {
-    }
-
-    /**
-     * Test of editOrder method, of class FMService.
-     */
-    @Test
-    public void testEditOrder() throws Exception {
     }
 
     /**
      * Test of calculateOrderDetails method, of class FMService.
      */
     @Test
-    public void testCalculateOrderDetails() throws Exception {
+    public void testCalculateOrderDetailsGoldenPath() {
+        try {
+            FMOrder toCalc = new FMOrder();
+            FMProduct product = new FMProduct();
+            toCalc.setStateAbv("CA");
+            toCalc.setCustomerName("Ron Swanson");
+            product.setMaterial("tile");
+            toCalc.setArea(new BigDecimal("249"));
+            toCalc.setProduct(product);
+            toCalc.setDate(date);
+            FMOrder finalOrder = serv.calculateOrderDetails(toCalc);
+            assertEquals(new BigDecimal("2381.06"), finalOrder.getTotalCost());
+        } catch (TaxDaoException ex) {
+            fail("Should not throw TaxDaoException in golden path.");
+        } catch (ProductDaoException ex) {
+            fail("Should not throw ProductDaoException in golden path.");
+        } catch (InvalidInputException ex) {
+            fail("Should not throw InvalidInputException in golden path.");
+        } catch (InvalidOrderDateException ex) {
+            fail("Should not throw InvalidOrderDateException in golden path.");
+        }
+
     }
-    
+
+    @Test
+    public void testCalculateOrderDetailsCustomerNameIsBlank() throws InvalidInputException {
+        try {
+            FMOrder toCalc = new FMOrder();
+            FMProduct product = new FMProduct();
+            toCalc.setStateAbv("CA");
+            toCalc.setCustomerName("");
+            product.setMaterial("tile");
+            toCalc.setArea(new BigDecimal("249"));
+            toCalc.setProduct(product);
+            toCalc.setDate(date);
+
+            FMOrder finalOrder = serv.calculateOrderDetails(toCalc);
+            fail("Should have thrown InvalidInputException.");
+        } catch (TaxDaoException ex) {
+            fail("Should not throw TaxDaoException");
+        } catch (ProductDaoException ex) {
+            fail("Should not throw ProductDaoException");
+        } catch (InvalidInputException ex) {
+
+        } catch (InvalidOrderDateException ex) {
+            fail("Should not throw InvalidOrderDateException");
+        }
+    }
+
+    @Test
+    public void testCalculateOrderDetailsCustomerNameContainsComma() throws InvalidInputException {
+        try {
+            FMOrder toCalc = new FMOrder();
+            FMProduct product = new FMProduct();
+            toCalc.setStateAbv("CA");
+            toCalc.setCustomerName("Ron, Swanson");
+            product.setMaterial("tile");
+            toCalc.setArea(new BigDecimal("249"));
+            toCalc.setProduct(product);
+            toCalc.setDate(date);
+            FMOrder finalOrder = serv.calculateOrderDetails(toCalc);
+            fail("Should have thrown InvalidInputException.");
+        } catch (TaxDaoException ex) {
+            fail("Should not throw TaxDaoException");
+        } catch (ProductDaoException ex) {
+            fail("Should not throw ProductDaoException");
+        } catch (InvalidInputException ex) {
+
+        } catch (InvalidOrderDateException ex) {
+            fail("Should not throw InvalidOrderDateException");
+        }
+    }
+
+    @Test
+    public void testCalculateOrderDetailsInvalidMaterial() throws InvalidInputException {
+        try {
+            FMOrder toCalc = new FMOrder();
+            FMProduct product = new FMProduct();
+            toCalc.setStateAbv("CA");
+            toCalc.setCustomerName("Ron Swanson");
+            product.setMaterial("plastic");
+            toCalc.setArea(new BigDecimal("249"));
+            toCalc.setProduct(product);
+            toCalc.setDate(date);
+
+            FMOrder finalOrder = serv.calculateOrderDetails(toCalc);
+            fail("Should have thrown InvalidInputException.");
+        } catch (TaxDaoException ex) {
+            fail("Should not throw TaxDaoException");
+        } catch (ProductDaoException ex) {
+            fail("Should not throw ProductDaoException");
+        } catch (InvalidInputException ex) {
+
+        } catch (InvalidOrderDateException ex) {
+            fail("Should not throw InvalidOrderDateException");
+        }
+    }
+
+    @Test
+    public void testCalculateOrderDetailsInvalidArea() throws InvalidInputException {
+        try {
+            FMOrder toCalc = new FMOrder();
+            FMProduct product = new FMProduct();
+            toCalc.setStateAbv("CA");
+            toCalc.setCustomerName("Ron Swanson");
+            product.setMaterial("tile");
+            toCalc.setArea(new BigDecimal("99"));
+            toCalc.setProduct(product);
+            toCalc.setDate(date);
+
+            FMOrder finalOrder = serv.calculateOrderDetails(toCalc);
+            fail("Should have thrown InvalidInputException.");
+        } catch (TaxDaoException ex) {
+            fail("Should not throw TaxDaoException");
+        } catch (ProductDaoException ex) {
+            fail("Should not throw ProductDaoException");
+        } catch (InvalidInputException ex) {
+
+        } catch (InvalidOrderDateException ex) {
+            fail("Should not throw InvalidOrderDateException");
+        }
+    }
+
+    @Test
+    public void testCalculateOrderDetailsInvalidState() throws InvalidInputException {
+        try {
+            FMOrder toCalc = new FMOrder();
+            FMProduct product = new FMProduct();
+            toCalc.setStateAbv("WV");
+            toCalc.setCustomerName("Ron Swanson");
+            product.setMaterial("tile");
+            toCalc.setArea(new BigDecimal("249"));
+            toCalc.setProduct(product);
+            toCalc.setDate(date);
+
+            FMOrder finalOrder = serv.calculateOrderDetails(toCalc);
+            fail("Should have thrown InvalidInputException.");
+        } catch (TaxDaoException ex) {
+            fail("Should not throw TaxDaoException");
+        } catch (ProductDaoException ex) {
+            fail("Should not throw ProductDaoException");
+        } catch (InvalidInputException ex) {
+
+        } catch (InvalidOrderDateException ex) {
+            fail("Should not throw InvalidOrderDateException");
+        }
+    }
+
+    @Test
+    public void testCalculateOrderDetailsFutureDate() throws InvalidOrderDateException {
+        try {
+            FMOrder toCalc = new FMOrder();
+            FMProduct product = new FMProduct();
+            toCalc.setStateAbv("CA");
+            toCalc.setCustomerName("Ron Swanson");
+            product.setMaterial("tile");
+            toCalc.setArea(new BigDecimal("249"));
+            toCalc.setProduct(product);
+            toCalc.setDate(LocalDate.of(1996, 12, 8));
+            FMOrder finalOrder = serv.calculateOrderDetails(toCalc);
+            fail("Should throw InvalidOrderDateException");
+        } catch (TaxDaoException ex) {
+            fail("Should not throw TaxDaoException");
+        } catch (ProductDaoException ex) {
+            fail("Should not throw ProductDaoException");
+        } catch (InvalidInputException ex) {
+            fail("Should not throw InvalidInputException");
+        } catch (InvalidOrderDateException ex) {
+        }
+    }
 }
