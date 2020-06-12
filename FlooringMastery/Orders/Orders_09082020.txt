@@ -1,3 +1,4 @@
 OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total
 1,Hugo Wright,CA,25.00,Laminate,400.00,1.75,2.10,700.00,840.00,385.00,1925.00
 2,Isaiah,MN,7.50,Marble,200.00,8.50,9.25,1700.00,1850.00,266.25,3816.25
+3,Charles Bronson,WA,9.25,Wood,260.00,5.15,4.75,1339.00,1235.00,238.10,2812.10
