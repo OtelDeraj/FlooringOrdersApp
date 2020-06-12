@@ -225,6 +225,7 @@ public class FMServiceTest {
         } catch (InvalidInputException ex) {
             fail("Should not throw InvalidInputException");
         } catch (InvalidOrderDateException ex) {
+            
         }
     }
 }

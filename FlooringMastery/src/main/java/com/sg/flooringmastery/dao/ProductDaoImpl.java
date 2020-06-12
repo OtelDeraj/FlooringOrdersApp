@@ -28,7 +28,7 @@ public class ProductDaoImpl implements PDao {
         this.PATH = path;
     }
 
-    public FMProduct convertLineToProduct(String row) {
+    private FMProduct convertLineToProduct(String row) {
         String[] cells = row.split(",");
 
         String material = cells[0];
