@@ -71,7 +71,6 @@ public class ProductDaoImpl implements PDao {
                 break;
             }
         }
-        System.out.println("getProductByName: " + toReturn);
         if(toReturn == null){
             throw new InvalidInputException("Product choice does not exist.");
         }

@@ -60,7 +60,6 @@ public class TaxDaoImpl implements TDao {
                 break;
             }
         }
-        System.out.println("getTaxByStateAbv: " + toReturn);
         if(toReturn == null){
             throw new InvalidInputException("State abbreviation does not exist.");
         }
