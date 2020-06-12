@@ -23,7 +23,7 @@ public class InMemPDao implements PDao{
     
     public InMemPDao(){
         FMProduct product1 = new FMProduct("carpet", new BigDecimal("2.25"), new BigDecimal("2.10"));
-        FMProduct product2 = new FMProduct("tile", new BigDecimal("1.50"), new BigDecimal("1.75"));
+        FMProduct product2 = new FMProduct("tile", new BigDecimal("3.50"), new BigDecimal("4.15"));
         allProducts.add(product1);
         allProducts.add(product2);
     }

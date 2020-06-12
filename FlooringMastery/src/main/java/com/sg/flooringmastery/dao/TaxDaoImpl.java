@@ -6,6 +6,7 @@
 package com.sg.flooringmastery.dao;
 
 import com.sg.flooringmastery.dto.FMTax;
+import com.sg.flooringmastery.exceptions.InvalidInputException;
 import com.sg.flooringmastery.exceptions.TaxDaoException;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -50,7 +51,7 @@ public class TaxDaoImpl implements TDao {
     }
     
     @Override
-    public FMTax getTaxByStateAbv(String abv) throws TaxDaoException {
+    public FMTax getTaxByStateAbv(String abv) throws TaxDaoException, InvalidInputException {
         FMTax toReturn = null;
         List<FMTax> allStates = getAllStates();
         for(FMTax t : allStates) {
@@ -58,6 +59,10 @@ public class TaxDaoImpl implements TDao {
                 toReturn = t;
                 break;
             }
+        }
+        System.out.println("getTaxByStateAbv: " + toReturn);
+        if(toReturn == null){
+            throw new InvalidInputException("State abbreviation does not exist.");
         }
         return toReturn;
     }

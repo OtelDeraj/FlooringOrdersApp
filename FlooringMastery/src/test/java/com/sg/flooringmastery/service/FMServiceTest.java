@@ -13,15 +13,13 @@ import com.sg.flooringmastery.exceptions.ProductDaoException;
 import com.sg.flooringmastery.exceptions.TaxDaoException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.Month;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -39,19 +37,19 @@ public class FMServiceTest {
         serv = ctx.getBean("serv", FMService.class);
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
     }
 

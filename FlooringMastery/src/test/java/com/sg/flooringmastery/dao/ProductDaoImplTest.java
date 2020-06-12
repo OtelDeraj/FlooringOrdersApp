@@ -6,6 +6,7 @@
 package com.sg.flooringmastery.dao;
 
 import com.sg.flooringmastery.dto.FMProduct;
+import com.sg.flooringmastery.exceptions.InvalidInputException;
 import com.sg.flooringmastery.exceptions.ProductDaoException;
 import java.io.File;
 import java.io.IOException;
@@ -16,12 +17,13 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -29,20 +31,20 @@ import static org.junit.Assert.*;
  */
 public class ProductDaoImplTest {
     
-    PDao pd = new ProductDaoImpl("testProducts.txt");
+    PDao pd = new ProductDaoImpl("TestData/testProducts.txt");
     
     public ProductDaoImplTest() {
     }
     
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
     }
     
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() {
     }
     
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         Path testPath = Paths.get("TestData", "testProducts.txt");
         Path seedPath = Paths.get("TestData", "seedProducts.txt");
@@ -53,7 +55,7 @@ public class ProductDaoImplTest {
         Files.copy(seedPath, testPath);
     }
     
-    @After
+    @AfterEach
     public void tearDown() {
     }
 
@@ -83,6 +85,8 @@ public class ProductDaoImplTest {
             assertEquals(new BigDecimal("4.15"), testProduct.getLaborCostPerSqFt());
         } catch (ProductDaoException ex) {
             fail("Should not hit ProductDaoException in golden path");
+        } catch (InvalidInputException ex) {
+            fail("Should not hit InvalidInputException in golden path");
         }
     }
     
@@ -90,9 +94,11 @@ public class ProductDaoImplTest {
     public void testGetProductByNameBadName(){
         try {
             FMProduct testProduct = pd.getProductByName("Plastic");
-            fail("Should have hit ProductDaoException");
-        } catch (ProductDaoException ex) {
+            fail("Should have hit InvalidInputException");
+        } catch (InvalidInputException ex) {
 
+        } catch (ProductDaoException ex) {
+            fail("Should not hit ProductDaoException in Bad Name check");
         }
     }
     

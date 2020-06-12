@@ -6,6 +6,7 @@
 package com.sg.flooringmastery.dao;
 
 import com.sg.flooringmastery.dto.FMProduct;
+import com.sg.flooringmastery.exceptions.InvalidInputException;
 import com.sg.flooringmastery.exceptions.ProductDaoException;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -61,7 +62,7 @@ public class ProductDaoImpl implements PDao {
     }
 
     @Override
-    public FMProduct getProductByName(String name) throws ProductDaoException {
+    public FMProduct getProductByName(String name) throws ProductDaoException, InvalidInputException {
         FMProduct toReturn = null;
         List<FMProduct> allProducts = getAllProducts();
         for(FMProduct p : allProducts){
@@ -69,6 +70,10 @@ public class ProductDaoImpl implements PDao {
                 toReturn = p;
                 break;
             }
+        }
+        System.out.println("getProductByName: " + toReturn);
+        if(toReturn == null){
+            throw new InvalidInputException("Product choice does not exist.");
         }
         return toReturn;
     }

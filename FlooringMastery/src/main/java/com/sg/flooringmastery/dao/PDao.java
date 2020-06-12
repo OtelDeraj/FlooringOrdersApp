@@ -6,6 +6,7 @@
 package com.sg.flooringmastery.dao;
 
 import com.sg.flooringmastery.dto.FMProduct;
+import com.sg.flooringmastery.exceptions.InvalidInputException;
 import com.sg.flooringmastery.exceptions.ProductDaoException;
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface PDao {
     
     List<FMProduct> getAllProducts() throws ProductDaoException;
     
-    FMProduct getProductByName(String name) throws ProductDaoException;
+    FMProduct getProductByName(String name) throws ProductDaoException, InvalidInputException;
     
     
 }

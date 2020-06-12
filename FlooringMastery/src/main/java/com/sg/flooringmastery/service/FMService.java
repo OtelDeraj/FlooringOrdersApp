@@ -6,11 +6,8 @@
 package com.sg.flooringmastery.service;
 
 import com.sg.flooringmastery.dao.ODao;
-import com.sg.flooringmastery.dao.OrderDaoImpl;
 import com.sg.flooringmastery.dao.PDao;
-import com.sg.flooringmastery.dao.ProductDaoImpl;
 import com.sg.flooringmastery.dao.TDao;
-import com.sg.flooringmastery.dao.TaxDaoImpl;
 import com.sg.flooringmastery.dto.FMOrder;
 import com.sg.flooringmastery.dto.FMProduct;
 import com.sg.flooringmastery.dto.FMTax;
@@ -65,10 +62,10 @@ public class FMService {
     //Remove
     //this method will end the removal feature path without removing the file if 
     // passed order is null
-    public void removeOrder(FMOrder toRemove) throws OrderDaoException, InvalidOrderDateException {
+    public void removeOrder(FMOrder toRemove) throws OrderDaoException, InvalidOrderDateException, InvalidInputException {
         od.removeOrder(toRemove);
     }
-//    public void removeOrder(FMOrder toRemove)
+
     
     //Edit
     
@@ -76,14 +73,12 @@ public class FMService {
         return od.getOrder(date, orderNum);
     }
     
-    public void editOrder(FMOrder toEdit) throws OrderDaoException, TaxDaoException, ProductDaoException, InvalidOrderDateException, NullArgumentException{
+    public void editOrder(FMOrder toEdit) throws OrderDaoException, TaxDaoException, ProductDaoException, InvalidOrderDateException, NullArgumentException, InvalidInputException{
         od.editOrder(toEdit);
 
     }
     
-//    private void editOrder(FMOrder toEdit) throws OrderDaoException, TaxDaoException, ProductDaoException, InvalidOrderDateException{
-//        od.editOrder(toEdit);
-//    }
+
     
     
     // this method builds a new order object after calculating taxes and totals
@@ -105,7 +100,7 @@ public class FMService {
         validateCustomerName(toCheck.getCustomerName());
         validateMaterial(toCheck.getProduct().getMaterial());
         validateArea(toCheck.getArea());
-        validateState(toCheck.getTaxRate().getStateAbv());
+        validateState(toCheck.getStateAbv());
         
     }
 
@@ -141,7 +136,6 @@ public class FMService {
         if (date.compareTo(LocalDate.now()) < 0) {
                 throw new InvalidOrderDateException("Order dates cannot be made for past dates.");
             }
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     

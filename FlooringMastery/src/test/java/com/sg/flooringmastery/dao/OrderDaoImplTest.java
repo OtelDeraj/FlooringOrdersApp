@@ -18,17 +18,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.Month;
-import java.util.HashSet;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -42,15 +39,15 @@ public class OrderDaoImplTest {
     public OrderDaoImplTest() {
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         Path testPath = Paths.get("TestData", "Orders_09082020.txt");
         Path seedPath = Paths.get("TestData", "seedOrders.txt");
@@ -61,7 +58,7 @@ public class OrderDaoImplTest {
         Files.copy(seedPath, testPath);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
     }
 
@@ -158,7 +155,7 @@ public class OrderDaoImplTest {
     @Test
     public void testGetOrderBadOrderNum() {
         try {
-            od.getOrder(date, -1);
+            od.getOrder(date, 99);
 
             fail("Should have thrown InvalidInputException.");
         } catch (OrderDaoException ex) {
@@ -281,7 +278,7 @@ public class OrderDaoImplTest {
             FMOrder toEdit = od.getOrder(date, 2);
             BigDecimal chonk = toEdit.getArea().add(new BigDecimal("10"));
             toEdit.setArea(chonk);
-            toEdit.setOrderNum(-1);
+            toEdit.setOrderNum(99);
             od.editOrder(toEdit);
             fail("should have hit InvalidInputException");
         } catch (OrderDaoException ex) {
@@ -353,7 +350,7 @@ public class OrderDaoImplTest {
     public void testRemoveOrderBadOrderNum(){
         try {
             FMOrder toRemove = od.getOrder(date, 2);
-            toRemove.setOrderNum(-1);
+            toRemove.setOrderNum(99);
             od.removeOrder(toRemove);
             fail("Should have hit InvalidInputException");
         } catch (OrderDaoException ex) {

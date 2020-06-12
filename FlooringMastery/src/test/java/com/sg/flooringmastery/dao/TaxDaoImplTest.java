@@ -6,6 +6,7 @@
 package com.sg.flooringmastery.dao;
 
 import com.sg.flooringmastery.dto.FMTax;
+import com.sg.flooringmastery.exceptions.InvalidInputException;
 import com.sg.flooringmastery.exceptions.TaxDaoException;
 import java.io.File;
 import java.io.IOException;
@@ -16,12 +17,13 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.AfterAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -29,20 +31,20 @@ import static org.junit.Assert.*;
  */
 public class TaxDaoImplTest {
 
-    TDao td = new TaxDaoImpl("testTaxes.txt");
+    TDao td = new TaxDaoImpl("TestData/testTaxes.txt");
 
     public TaxDaoImplTest() {
     }
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass() {
     }
 
-    @AfterClass
+    @AfterAll
     public static void tearDownClass() {
     }
 
-    @Before
+    @BeforeEach
     public void setUp() throws IOException {
         Path testPath = Paths.get("TestData", "testTaxes.txt");
         Path seedPath = Paths.get("TestData", "seedTaxes.txt");
@@ -53,7 +55,7 @@ public class TaxDaoImplTest {
         Files.copy(seedPath, testPath);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
     }
 
@@ -84,6 +86,8 @@ public class TaxDaoImplTest {
             assertEquals(new BigDecimal("4.45"), testTax.getStateTaxRate());
         } catch (TaxDaoException ex) {
             fail("Should not throw TaxDaoException in golden path.");
+        } catch (InvalidInputException ex) {
+            fail("Should not have thrown InvalidInputException in golden path.");
         }
     }
 
@@ -91,8 +95,10 @@ public class TaxDaoImplTest {
     public void testGetTaxByStateAbvBadAbv() {
         try {
             FMTax testTax = td.getTaxByStateAbv("NY");
-            fail("Should have thrown TaxDaoException.");
+            fail("Should have thrown InvalidInputException.");
         } catch (TaxDaoException ex) {
+            fail("Should not have thrown TaxDaoException.");
+        } catch (InvalidInputException ex) {
             
         }
     }

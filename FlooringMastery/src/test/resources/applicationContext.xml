@@ -21,16 +21,16 @@ and open the template in the editor.
                 http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
 
 
-    <bean id="oDao" class="com.sg.flooringmastery.dao.OrdDaoImpl">
-        <constructor-arg value="testOrders.txt"/>
+    <bean id="oDao" class="com.sg.flooringmastery.dao.OrderDaoImpl">
+        <constructor-arg value="TestData/testOrders.txt"/>
     </bean>
     
     <bean id="pDao" class="com.sg.flooringmastery.dao.ProductDaoImpl">
-        <constructor-arg value="testProducts.txt"/>
+        <constructor-arg value="TestData/testProducts.txt"/>
     </bean>
     
     <bean id="tDao" class="com.sg.flooringmastery.dao.TaxDaoImpl">
-        <constructor-arg value="testTaxes.txt"/>
+        <constructor-arg value="TestData/testTaxes.txt"/>
     </bean>
     
     <bean id="inMemODao" class="com.sg.flooringmastery.dao.InMemODao"/>
@@ -43,7 +43,7 @@ and open the template in the editor.
     <bean id="serv" class="com.sg.flooringmastery.service.FMService">
         <constructor-arg ref="inMemODao"/>
         <constructor-arg ref="inMemPDao"/>
-        <constructor-arg reg="inMemTDao"/>
+        <constructor-arg ref="inMemTDao"/>
     </bean>
 
 

@@ -6,6 +6,7 @@
 package com.sg.flooringmastery.dao;
 
 import com.sg.flooringmastery.dto.FMTax;
+import com.sg.flooringmastery.exceptions.InvalidInputException;
 import com.sg.flooringmastery.exceptions.TaxDaoException;
 import java.math.BigDecimal;
 import java.util.List;
@@ -18,5 +19,5 @@ public interface TDao {
     
     List<FMTax> getAllStates() throws TaxDaoException;
     
-    FMTax getTaxByStateAbv(String abv) throws TaxDaoException;
+    FMTax getTaxByStateAbv(String abv) throws TaxDaoException, InvalidInputException;
 }

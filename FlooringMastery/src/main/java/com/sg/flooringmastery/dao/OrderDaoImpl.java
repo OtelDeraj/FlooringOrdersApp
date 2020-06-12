@@ -156,7 +156,7 @@ public class OrderDaoImpl implements ODao {
     }
 
     @Override
-    public void editOrder(FMOrder selectedOrder) throws OrderDaoException, InvalidOrderDateException {
+    public void editOrder(FMOrder selectedOrder) throws OrderDaoException, InvalidOrderDateException, InvalidInputException {
         List<FMOrder> allOrders = getOrdersForDate(selectedOrder.getDate());
         int index = -1;
         for (int i = 0; i < allOrders.size(); i++) {
@@ -167,13 +167,17 @@ public class OrderDaoImpl implements ODao {
                 break;
             }
         }
-        allOrders.set(index, selectedOrder);
+        try {
+            allOrders.set(index, selectedOrder);
+        } catch (IndexOutOfBoundsException ex) {
+            throw new InvalidInputException("OrderNum does not exist");
 
+        }
         writeFile(allOrders, selectedOrder.getDate());
     }
 
     @Override
-    public void removeOrder(FMOrder toRemove) throws OrderDaoException, InvalidOrderDateException {
+    public void removeOrder(FMOrder toRemove) throws OrderDaoException, InvalidOrderDateException, InvalidInputException {
         List<FMOrder> allOrders = getOrdersForDate(toRemove.getDate());
 
         int index = -1;
@@ -185,7 +189,11 @@ public class OrderDaoImpl implements ODao {
                 break;
             }
         }
-        allOrders.remove(index);
+        try {
+            allOrders.remove(index);
+        } catch (IndexOutOfBoundsException ex) {
+            throw new InvalidInputException("OrderNum does not exist");
+        }
         writeFile(allOrders, toRemove.getDate());
     }
 
@@ -194,7 +202,7 @@ public class OrderDaoImpl implements ODao {
             String fileName = "Orders_" + date.format(FORMATTER) + ".txt";
             Path filePath = Paths.get(DIRECTORY, fileName);
             return filePath.toString();
-        } catch(NullPointerException ex){
+        } catch (NullPointerException ex) {
             throw new OrderDaoException("Error converting date to path");
         }
     }

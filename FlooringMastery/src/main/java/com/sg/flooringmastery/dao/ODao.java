@@ -24,8 +24,8 @@ public interface ODao {
         
     void addOrder(FMOrder toAdd) throws OrderDaoException, InvalidOrderDateException;
     
-    void editOrder(FMOrder selectedOrder) throws OrderDaoException, InvalidOrderDateException;
+    void editOrder(FMOrder selectedOrder) throws OrderDaoException, InvalidOrderDateException, InvalidInputException;
     
-    void removeOrder(FMOrder toRemove) throws OrderDaoException, InvalidOrderDateException;
+    void removeOrder(FMOrder toRemove) throws OrderDaoException, InvalidOrderDateException, InvalidInputException;
     
 }
